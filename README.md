@@ -34,37 +34,102 @@ Then open `http://localhost:5000` in a browser — on your phone too, if it's
 on the same Wi-Fi network as your computer (use your computer's local IP
 instead of `localhost`, e.g. `http://192.168.1.23:5000`).
 
-## Deploy it publicly (free tier)
+## Deploy it publicly
+
+There are two ways to host this. Pick one.
+
+### Option A — single service (simplest)
+
+Render or Railway host the whole app (Flask serves both the API and the
+`templates/`/`static/` frontend from one URL).
 
 **Render**
 1. Push this `webapp/` folder to a GitHub repo.
 2. In Render, "New +" → "Web Service" → connect the repo.
-3. Render will detect `render.yaml` automatically (build: `pip install -r
+3. Render detects `render.yaml` automatically (build: `pip install -r
    requirements.txt`, start: `gunicorn app:app`).
-4. Deploy — you'll get a public `https://encage-xxxx.onrender.com` URL.
+4. Deploy — you get a public `https://encage-xxxx.onrender.com` URL, done.
 
 **Railway**
 1. Push to GitHub, then in Railway: "New Project" → "Deploy from GitHub repo".
-2. Railway auto-detects the `Procfile` and Python buildpack — no extra config
-   needed.
+2. Railway auto-detects the `Procfile` and Python buildpack — no extra config.
 
 Both free tiers spin down after inactivity, so the first request after a
 while may take 20-30 seconds to wake up.
+
+### Option B — GitHub + Cloudflare Pages (frontend) + Render (backend)
+
+Cloudflare Pages only serves **static** sites — it cannot run the Flask/Python
+backend (Biopython, SciPy, etc. need a real Python runtime). So the app is
+split in two: Pages hosts `frontend/` (static HTML/CSS/JS), Render hosts the
+API. The `frontend/` folder already talks to the backend over a configurable
+URL, so no code changes are needed beyond one config line.
+
+**1. Push the whole `webapp/` folder to a GitHub repo**, e.g.:
+```bash
+cd webapp
+git init
+git add .
+git commit -m "enCAGE web app"
+git branch -M main
+git remote add origin https://github.com/<you>/encage.git
+git push -u origin main
+```
+All the files listed under **File structure** below should be in the repo —
+Cloudflare Pages and Render each only read the subfolder they need.
+
+**2. Deploy the backend on Render first** (you need its URL before finishing
+the frontend):
+1. [dashboard.render.com](https://dashboard.render.com) → "New +" → "Web
+   Service" → connect your GitHub repo.
+2. Set **Root Directory** to `webapp` (Render will pick up `render.yaml` from
+   there — build `pip install -r requirements.txt`, start `gunicorn app:app`).
+3. Deploy. Copy the resulting URL, e.g. `https://encage-api.onrender.com`.
+4. (Recommended) In Render's environment variables, add
+   `ALLOWED_ORIGIN = https://<your-project>.pages.dev` once you know your
+   Pages URL, so only your frontend can call the API. It defaults to `*`
+   (any origin) if you skip this.
+
+**3. Point the frontend at that backend:**
+Edit `webapp/frontend/config.js`:
+```js
+window.ENCAGE_API_BASE = "https://encage-api.onrender.com";
+```
+Commit and push that change.
+
+**4. Deploy the frontend on Cloudflare Pages:**
+1. [dash.cloudflare.com](https://dash.cloudflare.com) → **Workers & Pages** →
+   "Create" → "Pages" → "Connect to Git" → select your repo.
+2. Build settings: **Framework preset** = "None", **Build command** = blank
+   (leave empty — there's nothing to build), **Build output directory** =
+   `webapp/frontend`.
+3. Deploy. You get a public `https://<your-project>.pages.dev` URL.
+4. Optional: attach a custom domain under the Pages project's "Custom
+   domains" tab.
+
+That's it — the Pages URL is what you share; it calls the Render URL behind
+the scenes. If you rename the Render service later, just update
+`frontend/config.js` and push again (Pages redeploys automatically on push).
 
 ## File structure
 
 ```
 webapp/
-├── app.py              # Flask routes (upload / PDB-ID fetch / analyze API)
-├── encage_core.py       # descriptor + regime prediction logic (importable)
+├── app.py               # Flask routes (upload / PDB-ID fetch / analyze API) — used by Render
+├── encage_core.py        # descriptor + regime prediction logic (importable)
+├── requirements.txt       # includes flask-cors, needed for the split (Option B) setup
+├── Procfile               # for Render/Railway (Option A)
+├── render.yaml            # Render service config
 ├── templates/
-│   └── index.html       # single-page frontend
+│   └── index.html         # frontend used ONLY when Flask serves it itself (Option A)
 ├── static/
-│   ├── style.css         # mobile-first responsive styling
-│   └── script.js         # upload/fetch, API calls, results rendering, CSV export
-├── requirements.txt
-├── Procfile              # for Render/Railway
-└── render.yaml           # Render service config
+│   ├── style.css
+│   └── script.js
+└── frontend/              # standalone static frontend for Cloudflare Pages (Option B)
+    ├── index.html
+    ├── style.css
+    ├── script.js
+    └── config.js           # <- set window.ENCAGE_API_BASE to your Render URL here
 ```
 
 ## Notes / limitations

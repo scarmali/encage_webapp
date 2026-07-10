@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>enCAGE — Ferritin Encapsulation Predictor</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <span class="brand-mark">enCAGE</span>
+      <span class="brand-sub">Cargo Assessment for Guided Encapsulation</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="intro">
+    <h1>Predict your protein's ferritin encapsulation regime</h1>
+    <p>
+      Upload a PDB structure (or fetch one by ID) to estimate whether a cargo protein
+      is likely to undergo <strong>efficient luminal encapsulation</strong> (Regime I),
+      <strong>steric/structural accommodation</strong> (Regime II), or
+      <strong>charge-driven off-pathway assembly</strong> (Regime III) in apoferritin
+      nanocages, based on net charge, size, and cavity occupancy descriptors.
+    </p>
+  </section>
+
+  <section class="card input-card">
+
+    <div class="tabs" role="tablist">
+      <button class="tab active" data-tab="upload" role="tab" aria-selected="true">Upload PDB file</button>
+      <button class="tab" data-tab="fetch" role="tab" aria-selected="false">Fetch by PDB ID</button>
+    </div>
+
+    <div class="tab-panel" id="panel-upload">
+      <label class="dropzone" id="dropzone" for="fileInput">
+        <input type="file" id="fileInput" accept=".pdb,.ent" hidden />
+        <div class="dropzone-content">
+          <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.6">
+            <path d="M12 3v12m0-12 4.5 4.5M12 3 7.5 7.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M4 16.5V19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <p><strong>Tap to choose a file</strong><br/>or drag & drop a .pdb here</p>
+          <p class="file-name" id="fileName"></p>
+        </div>
+      </label>
+    </div>
+
+    <div class="tab-panel hidden" id="panel-fetch">
+      <label class="field-label" for="pdbIdInput">RCSB PDB ID</label>
+      <input class="text-input" id="pdbIdInput" type="text" maxlength="4" placeholder="e.g. 4CHA" autocapitalize="characters" autocomplete="off" />
+      <p class="hint">Fetched live from files.rcsb.org — no upload needed.</p>
+    </div>
+
+    <details class="advanced">
+      <summary>Advanced options (optional)</summary>
+      <div class="advanced-grid">
+        <div>
+          <label class="field-label" for="phInput">pH</label>
+          <input class="text-input" id="phInput" type="number" step="0.1" placeholder="7.4" />
+        </div>
+        <div>
+          <label class="field-label" for="cationicInput">Cationic threshold (net charge)</label>
+          <input class="text-input" id="cationicInput" type="number" step="0.1" placeholder="5.0" />
+        </div>
+        <div>
+          <label class="field-label" for="chargeOverride">Net charge override</label>
+          <input class="text-input" id="chargeOverride" type="number" step="0.1" placeholder="e.g. from Prot pi" />
+        </div>
+        <div>
+          <label class="field-label" for="volumeOverride">SES volume override (Å³)</label>
+          <input class="text-input" id="volumeOverride" type="number" step="1" placeholder="e.g. from ChimeraX" />
+        </div>
+      </div>
+      <p class="hint">
+        Volume is estimated with a fast grid-based approximation by default. For
+        manuscript-consistent numbers, supply a ChimeraX solvent-excluded volume
+        and/or a Prot pi net charge above.
+      </p>
+    </details>
+
+    <button class="btn-primary" id="analyzeBtn">Analyze</button>
+    <p class="error-msg hidden" id="errorMsg"></p>
+  </section>
+
+  <section class="card result-card hidden" id="resultCard">
+    <div class="regime-badge" id="regimeBadge">
+      <span class="regime-roman" id="regimeRoman">I</span>
+      <span class="regime-text" id="regimeText">Efficient luminal encapsulation</span>
+    </div>
+    <h2 id="resultProtein">—</h2>
+
+    <div class="descriptor-grid" id="descriptorGrid"></div>
+
+    <div class="notes" id="notesBlock"></div>
+
+    <div class="result-actions">
+      <button class="btn-secondary" id="downloadBtn">Download CSV</button>
+      <button class="btn-secondary" id="resetBtn">Analyze another</button>
+    </div>
+  </section>
+
+  <div class="loading hidden" id="loading">
+    <div class="spinner"></div>
+    <p>Analyzing structure…</p>
+  </div>
+
+  <section class="disclaimer">
+    <p>
+      enCAGE is a heuristic design aid, not a validated classifier. Regime
+      boundaries are calibrated on a small in-house cargo panel (equine
+      apoferritin, pH cycling) and should be refined as more data accrue.
+    </p>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <p>enCAGE · Descriptor-guided framework for protein encapsulation in apoferritin nanocages</p>
+</footer>
+
+<script src="config.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

@@ -7,11 +7,21 @@ protein cargo, from its PDB structure.
 
 Routes
 ------
-GET  /                  -> serves the frontend (templates/index.html)
+GET  /                  -> serves the frontend (templates/index.html) - only used
+                           when this app serves the frontend itself (single-service
+                           deployment). If you're hosting the frontend separately
+                           on Cloudflare Pages, this route is simply unused.
 POST /api/analyze       -> multipart form: 'pdb_file' (upload) OR 'pdb_id'
                            (fetched live from RCSB), plus optional 'ph',
                            'cationic_threshold', 'net_charge', 'ses_volume_a3'
 GET  /api/health        -> simple healthcheck for deployment platforms
+
+CORS
+----
+When the frontend is hosted on a different domain (e.g. Cloudflare Pages) than
+this API (e.g. Render), the browser enforces CORS. Set the ALLOWED_ORIGIN
+environment variable to your Pages URL (e.g. https://encage.pages.dev) in
+production; it defaults to "*" (any origin) which is fine for getting started.
 """
 
 import os
@@ -20,11 +30,15 @@ import tempfile
 
 import requests
 from flask import Flask, request, jsonify, render_template
+from flask_cors import CORS
 
 from encage_core import analyze_pdb, AnalysisError
 
 app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = 20 * 1024 * 1024  # 20 MB upload cap
+
+ALLOWED_ORIGIN = os.environ.get("ALLOWED_ORIGIN", "*")
+CORS(app, resources={r"/api/*": {"origins": ALLOWED_ORIGIN}})
 
 RCSB_URL = "https://files.rcsb.org/download/{id}.pdb"
 PDB_ID_RE = re.compile(r"^[A-Za-z0-9]{4}$")
