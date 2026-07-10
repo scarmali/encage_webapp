@@ -1,0 +1,6 @@
+flask==3.0.3
+requests==2.32.3
+numpy==1.26.4
+scipy==1.13.1
+biopython==1.83
+gunicorn==22.0.0
