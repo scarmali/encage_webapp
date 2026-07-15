@@ -4,124 +4,287 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>enCAGE — Ferritin Encapsulation Predictor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-<header class="topbar">
-  <div class="topbar-inner">
-    <div class="brand">
-      <span class="brand-mark">enCAGE</span>
-      <span class="brand-sub">Cargo Assessment for Guided Encapsulation</span>
+<div class="toolbar">
+  <div class="toolbar-inner">
+    <div class="toolbar-brand">
+      <svg class="logo-mark" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="ringGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#1E5FAA"/>
+            <stop offset="50%" stop-color="#7CB342"/>
+            <stop offset="100%" stop-color="#F08C1F"/>
+          </linearGradient>
+        </defs>
+        <circle cx="60" cy="60" r="52" fill="none" stroke="url(#ringGrad)" stroke-width="4"/>
+        <circle cx="60" cy="60" r="34" fill="none" stroke="url(#ringGrad)" stroke-width="1.5" stroke-dasharray="2 5" opacity="0.55"/>
+        <g>
+          <circle cx="60" cy="8" r="5" fill="#1E5FAA"/>
+          <circle cx="97" cy="23" r="5" fill="#4C8F3E"/>
+          <circle cx="112" cy="60" r="5" fill="#7CB342"/>
+          <circle cx="97" cy="97" r="5" fill="#D9A02A"/>
+          <circle cx="60" cy="112" r="5" fill="#F08C1F"/>
+          <circle cx="23" cy="97" r="5" fill="#1E5FAA"/>
+          <circle cx="8" cy="60" r="5" fill="#1E5FAA"/>
+          <circle cx="23" cy="23" r="5" fill="#1E5FAA"/>
+        </g>
+        <path d="M44 40 C 52 46, 52 54, 60 58 C 68 62, 68 70, 60 76 C 54 80, 50 84, 54 90" fill="none" stroke="#2D8659" stroke-width="5" stroke-linecap="round"/>
+        <path d="M52 34 C 60 40, 60 48, 68 52 C 76 56, 76 64, 68 70" fill="none" stroke="#1E5FAA" stroke-width="5" stroke-linecap="round" opacity="0.88"/>
+      </svg>
+      <div class="toolbar-brand-text">
+        <span class="name">enCAGE</span>
+        <span class="tag">Cargo Assessment for Guided Encapsulation</span>
+      </div>
     </div>
+    <nav class="toolbar-nav">
+      <a class="toolbar-link" href="https://github.com/scarmali/encage_webapp" target="_blank" rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.58 2 12.19c0 4.5 2.87 8.31 6.84 9.66.5.1.68-.22.68-.49 0-.24-.01-.87-.01-1.71-2.78.62-3.37-1.37-3.37-1.37-.45-1.18-1.11-1.49-1.11-1.49-.91-.64.07-.63.07-.63 1 .07 1.53 1.05 1.53 1.05.89 1.57 2.34 1.11 2.91.85.09-.66.35-1.11.63-1.37-2.22-.26-4.56-1.14-4.56-5.06 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.31.1-2.73 0 0 .84-.28 2.75 1.05a9.3 9.3 0 0 1 5 0c1.9-1.33 2.75-1.05 2.75-1.05.55 1.42.2 2.47.1 2.73.64.72 1.03 1.63 1.03 2.75 0 3.93-2.34 4.79-4.57 5.05.36.32.68.94.68 1.9 0 1.37-.01 2.48-.01 2.81 0 .27.18.6.69.49A10.02 10.02 0 0 0 22 12.19C22 6.58 17.52 2 12 2Z"/></svg>
+        <span class="label">GitHub</span>
+      </a>
+      <a class="toolbar-link" href="https://carmali-lab.com/" target="_blank" rel="noopener">
+        <img src="https://carmali-lab.com/images/logo.png" alt="Carmali Lab logo" />
+        <span class="label">Carmali Lab</span>
+      </a>
+    </nav>
   </div>
-</header>
+</div>
 
 <main class="wrap">
+  <div class="layout">
 
-  <section class="intro">
-    <h1>Predict your protein's ferritin encapsulation regime</h1>
-    <p>
-      Upload a PDB structure (or fetch one by ID) to estimate whether a cargo protein
-      is likely to undergo <strong>efficient luminal encapsulation</strong> (Regime I),
-      <strong>steric/structural accommodation</strong> (Regime II), or
-      <strong>charge-driven off-pathway assembly</strong> (Regime III) in apoferritin
-      nanocages, based on net charge, size, and cavity occupancy descriptors.
-    </p>
-  </section>
+    <aside class="sidebar">
+      <section class="card input-card">
+        <div class="card-header"><h2>1. Input protein</h2></div>
+        <div class="card-body">
 
-  <section class="card input-card">
+          <div class="tabs" role="tablist">
+            <button class="tab active" data-tab="upload" role="tab" aria-selected="true">Upload PDB file</button>
+            <button class="tab" data-tab="fetch" role="tab" aria-selected="false">Fetch by PDB ID</button>
+          </div>
 
-    <div class="tabs" role="tablist">
-      <button class="tab active" data-tab="upload" role="tab" aria-selected="true">Upload PDB file</button>
-      <button class="tab" data-tab="fetch" role="tab" aria-selected="false">Fetch by PDB ID</button>
-    </div>
+          <div class="tab-panel" id="panel-upload">
+            <label class="dropzone" id="dropzone" for="fileInput">
+              <input type="file" id="fileInput" accept=".pdb,.ent" hidden />
+              <div class="dropzone-content">
+                <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6">
+                  <path d="M12 3v12m0-12 4.5 4.5M12 3 7.5 7.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M4 16.5V19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <p><strong>Tap to choose a file</strong><br/>or drag & drop a .pdb here</p>
+                <p class="file-name" id="fileName"></p>
+              </div>
+            </label>
+          </div>
 
-    <div class="tab-panel" id="panel-upload">
-      <label class="dropzone" id="dropzone" for="fileInput">
-        <input type="file" id="fileInput" accept=".pdb,.ent" hidden />
-        <div class="dropzone-content">
-          <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.6">
-            <path d="M12 3v12m0-12 4.5 4.5M12 3 7.5 7.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M4 16.5V19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          <p><strong>Tap to choose a file</strong><br/>or drag & drop a .pdb here</p>
-          <p class="file-name" id="fileName"></p>
+          <div class="tab-panel hidden" id="panel-fetch">
+            <label class="field-label" for="pdbIdInput">RCSB PDB ID</label>
+            <input class="text-input" id="pdbIdInput" type="text" maxlength="4" placeholder="e.g. 4CHA" autocapitalize="characters" autocomplete="off" />
+            <p class="hint">Fetched live from files.rcsb.org — no upload needed.</p>
+          </div>
         </div>
-      </label>
-    </div>
+      </section>
 
-    <div class="tab-panel hidden" id="panel-fetch">
-      <label class="field-label" for="pdbIdInput">RCSB PDB ID</label>
-      <input class="text-input" id="pdbIdInput" type="text" maxlength="4" placeholder="e.g. 4CHA" autocapitalize="characters" autocomplete="off" />
-      <p class="hint">Fetched live from files.rcsb.org — no upload needed.</p>
-    </div>
+      <section class="card">
+        <div class="card-header"><h2>2. Conditions</h2></div>
+        <div class="card-body">
+          <div class="field-grid">
+            <div>
+              <label class="field-label" for="phInput">pH</label>
+              <input class="text-input" id="phInput" type="number" step="0.1" placeholder="7.4" />
+            </div>
+            <div>
+              <label class="field-label" for="cationicInput">Cationic threshold</label>
+              <input class="text-input" id="cationicInput" type="number" step="0.1" placeholder="5.0" />
+            </div>
+          </div>
 
-    <details class="advanced">
-      <summary>Advanced options (optional)</summary>
-      <div class="advanced-grid">
-        <div>
-          <label class="field-label" for="phInput">pH</label>
-          <input class="text-input" id="phInput" type="number" step="0.1" placeholder="7.4" />
+          <details class="advanced">
+            <summary>Manual overrides (optional)</summary>
+            <div class="advanced-grid">
+              <div>
+                <label class="field-label" for="chargeOverride">Net charge override</label>
+                <input class="text-input" id="chargeOverride" type="number" step="0.1" placeholder="e.g. from Prot pi" />
+              </div>
+              <div>
+                <label class="field-label" for="volumeOverride">SES volume override (Å³)</label>
+                <input class="text-input" id="volumeOverride" type="number" step="1" placeholder="e.g. from ChimeraX" />
+              </div>
+            </div>
+            <p class="hint">
+              Volume is estimated with a fast grid-based approximation by default. For
+              manuscript-consistent numbers, supply a ChimeraX solvent-excluded volume
+              and/or a Prot pi net charge above.
+            </p>
+          </details>
         </div>
-        <div>
-          <label class="field-label" for="cationicInput">Cationic threshold (net charge)</label>
-          <input class="text-input" id="cationicInput" type="number" step="0.1" placeholder="5.0" />
+      </section>
+
+      <button class="btn-primary" id="analyzeBtn">Run enCAGE analysis</button>
+      <p class="privacy-hint">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 6v6c0 5 3.4 8.5 8 10 4.6-1.5 8-5 8-10V6l-8-4Z"/></svg>
+        Structures are processed transiently to compute your prediction and are not stored afterward.
+      </p>
+      <p class="error-msg hidden" id="errorMsg"></p>
+    </aside>
+
+    <section class="main-panel is-empty" id="resultCard">
+
+      <div class="welcome" id="emptyState">
+        <h1>Welcome to <span class="grad-en">en</span><span class="grad-ca">CA</span><span class="grad-ge">GE</span></h1>
+        <p class="lede">Predict the outcome of protein encapsulation in apoferritin nanocages</p>
+        <p class="desc">
+          enCAGE uses a descriptor-guided framework that integrates structural and physicochemical
+          properties to classify the likely assembly regime for your protein of interest —
+          efficient luminal encapsulation, steric/structural accommodation, or charge-driven
+          off-pathway assembly.
+        </p>
+
+        <div class="feature-grid">
+          <div class="feature-card f1">
+            <span class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 20 7.5v9L12 21 4 16.5v-9Z"/><path d="M4 7.5 12 12l8-4.5M12 12v9"/></svg></span>
+            <span class="title">Structure-aware</span>
+            <span class="desc">Integrates size, shape and Dmax to assess steric compatibility with the ferritin cavity</span>
+          </div>
+          <div class="feature-card f2">
+            <span class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="2"/><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="19" r="1.6"/><circle cx="5" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/><path d="M12 7v3M12 14v3M7 12h3M14 12h3" stroke-dasharray="1 2.5"/></svg></span>
+            <span class="title">Charge-informed</span>
+            <span class="desc">Considers electrostatic complementarity with the negatively charged apoferritin interior</span>
+          </div>
+          <div class="feature-card f3">
+            <span class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><path d="M12 7v4M12 11 6 17M12 11l6 6"/></svg></span>
+            <span class="title">Descriptor-guided</span>
+            <span class="desc">Classifies assembly into interpretable regimes with a clear, hierarchical rationale</span>
+          </div>
+          <div class="feature-card f4">
+            <span class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 7.5-2"/></svg></span>
+            <span class="title">Open &amp; web-based</span>
+            <span class="desc">Rule-based framework, no installation required — runs directly in your browser</span>
+          </div>
         </div>
-        <div>
-          <label class="field-label" for="chargeOverride">Net charge override</label>
-          <input class="text-input" id="chargeOverride" type="number" step="0.1" placeholder="e.g. from Prot pi" />
+
+        <div class="get-started">
+          <span class="icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 20 7.5v9L12 21 4 16.5v-9Z"/></svg>
+          </span>
+          <div>
+            <p class="title">Get started</p>
+            <p class="body">Upload a .pdb file or enter a PDB ID on the left, then run the analysis.
+              <em>enCAGE is a heuristic design aid, not a validated classifier — regime boundaries are calibrated on a small in-house cargo panel.</em>
+            </p>
+          </div>
         </div>
-        <div>
-          <label class="field-label" for="volumeOverride">SES volume override (Å³)</label>
-          <input class="text-input" id="volumeOverride" type="number" step="1" placeholder="e.g. from ChimeraX" />
+
+        <div class="evidence-strip">
+          <div class="left">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 2v6L4 19a2 2 0 0 0 1.8 3h12.4A2 2 0 0 0 20 19l-5-11V2"/><path d="M9 2h6M6 15h12"/></svg>
+            <div>
+              <p class="title">Built on experimental evidence</p>
+              <p class="body">Descriptor thresholds are grounded in the accompanying manuscript's cargo panel.</p>
+            </div>
+          </div>
+          <div class="links">
+            <a href="https://github.com/scarmali/encage_webapp" target="_blank" rel="noopener">View source ↗</a>
+          </div>
         </div>
       </div>
-      <p class="hint">
-        Volume is estimated with a fast grid-based approximation by default. For
-        manuscript-consistent numbers, supply a ChimeraX solvent-excluded volume
-        and/or a Prot pi net charge above.
-      </p>
-    </details>
 
-    <button class="btn-primary" id="analyzeBtn">Analyze</button>
-    <p class="error-msg hidden" id="errorMsg"></p>
-  </section>
+      <div class="loading hidden" id="loading">
+        <div class="spinner"></div>
+        <p>Analyzing structure…</p>
+      </div>
 
-  <section class="card result-card hidden" id="resultCard">
-    <div class="regime-badge" id="regimeBadge">
-      <span class="regime-roman" id="regimeRoman">I</span>
-      <span class="regime-text" id="regimeText">Efficient luminal encapsulation</span>
-    </div>
-    <h2 id="resultProtein">—</h2>
+      <div class="result-content" id="resultContent">
+        <div class="card">
+          <div class="card-header"><h2>Prediction</h2></div>
+          <div class="card-body">
+            <p class="section-label">Predicted regime</p>
+            <div class="regime-badge" id="regimeBadge">
+              <span class="regime-roman" id="regimeRoman">I</span>
+              <span class="regime-text" id="regimeText">Efficient luminal encapsulation</span>
+            </div>
+            <h3 id="resultProtein">—</h3>
 
-    <div class="descriptor-grid" id="descriptorGrid"></div>
+            <p class="section-label">Key descriptors</p>
+            <div class="descriptor-table-wrap">
+              <table class="descriptor-table" id="descriptorTable">
+                <thead>
+                  <tr><th>Descriptor</th><th>Value</th><th>Cavity reference</th></tr>
+                </thead>
+                <tbody id="descriptorGrid"></tbody>
+              </table>
+            </div>
 
-    <div class="notes" id="notesBlock"></div>
+            <p class="section-label">Rationale &amp; notes</p>
+            <div class="notes" id="notesBlock"></div>
 
-    <div class="result-actions">
-      <button class="btn-secondary" id="downloadBtn">Download CSV</button>
-      <button class="btn-secondary" id="resetBtn">Analyze another</button>
-    </div>
-  </section>
+            <div class="result-actions">
+              <button class="btn-secondary" id="downloadBtn">Download CSV</button>
+              <button class="btn-secondary" id="resetBtn">Analyze another</button>
+            </div>
+          </div>
+        </div>
+      </div>
 
-  <div class="loading hidden" id="loading">
-    <div class="spinner"></div>
-    <p>Analyzing structure…</p>
+    </section>
+
   </div>
-
-  <section class="disclaimer">
-    <p>
-      enCAGE is a heuristic design aid, not a validated classifier. Regime
-      boundaries are calibrated on a small in-house cargo panel (equine
-      apoferritin, pH cycling) and should be refined as more data accrue.
-    </p>
-  </section>
 
 </main>
 
-<footer class="footer">
-  <p>enCAGE · Descriptor-guided framework for protein encapsulation in apoferritin nanocages</p>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <svg class="logo-mark" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="ringGradFoot" x1="0%" y1="100%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#1E5FAA"/>
+            <stop offset="50%" stop-color="#7CB342"/>
+            <stop offset="100%" stop-color="#F08C1F"/>
+          </linearGradient>
+        </defs>
+        <circle cx="60" cy="60" r="52" fill="none" stroke="url(#ringGradFoot)" stroke-width="4"/>
+        <circle cx="60" cy="60" r="34" fill="none" stroke="url(#ringGradFoot)" stroke-width="1.5" stroke-dasharray="2 5" opacity="0.55"/>
+        <g>
+          <circle cx="60" cy="8" r="5" fill="#1E5FAA"/>
+          <circle cx="97" cy="23" r="5" fill="#4C8F3E"/>
+          <circle cx="112" cy="60" r="5" fill="#7CB342"/>
+          <circle cx="97" cy="97" r="5" fill="#D9A02A"/>
+          <circle cx="60" cy="112" r="5" fill="#F08C1F"/>
+          <circle cx="23" cy="97" r="5" fill="#1E5FAA"/>
+          <circle cx="8" cy="60" r="5" fill="#1E5FAA"/>
+          <circle cx="23" cy="23" r="5" fill="#1E5FAA"/>
+        </g>
+        <path d="M44 40 C 52 46, 52 54, 60 58 C 68 62, 68 70, 60 76 C 54 80, 50 84, 54 90" fill="none" stroke="#2D8659" stroke-width="5" stroke-linecap="round"/>
+        <path d="M52 34 C 60 40, 60 48, 68 52 C 76 56, 76 64, 68 70" fill="none" stroke="#1E5FAA" stroke-width="5" stroke-linecap="round" opacity="0.88"/>
+      </svg>
+      <div>
+        <p class="name">enCAGE</p>
+        <p class="desc">Descriptor-guided framework for protein encapsulation in apoferritin nanocages, from the Carmali Lab.</p>
+      </div>
+    </div>
+    <div class="footer-links">
+      <a href="https://carmali-lab.com/" target="_blank" rel="noopener">
+        <img src="https://carmali-lab.com/images/logo.png" alt="Carmali Lab logo" /> Carmali Lab
+      </a>
+      <a href="https://github.com/scarmali/encage_webapp" target="_blank" rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.58 2 12.19c0 4.5 2.87 8.31 6.84 9.66.5.1.68-.22.68-.49 0-.24-.01-.87-.01-1.71-2.78.62-3.37-1.37-3.37-1.37-.45-1.18-1.11-1.49-1.11-1.49-.91-.64.07-.63.07-.63 1 .07 1.53 1.05 1.53 1.05.89 1.57 2.34 1.11 2.91.85.09-.66.35-1.11.63-1.37-2.22-.26-4.56-1.14-4.56-5.06 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.31.1-2.73 0 0 .84-.28 2.75 1.05a9.3 9.3 0 0 1 5 0c1.9-1.33 2.75-1.05 2.75-1.05.55 1.42.2 2.47.1 2.73.64.72 1.03 1.63 1.03 2.75 0 3.93-2.34 4.79-4.57 5.05.36.32.68.94.68 1.9 0 1.37-.01 2.48-.01 2.81 0 .27.18.6.69.49A10.02 10.02 0 0 0 22 12.19C22 6.58 17.52 2 12 2Z"/></svg>
+        Source code
+      </a>
+      <a href="mailto:s.carmali@qub.ac.uk">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+        Contact
+      </a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 Carmali Lab, School of Pharmacy, Queen's University Belfast.</p>
+  </div>
 </footer>
 
 <script src="config.js"></script>

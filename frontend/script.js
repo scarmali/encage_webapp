@@ -1,9 +1,4 @@
 (function () {
-  // API_BASE is set in config.js (window.ENCAGE_API_BASE), so the same static
-  // frontend can be pointed at a local dev server or a deployed Render/Railway
-  // backend without editing this file.
-  const API_BASE = (window.ENCAGE_API_BASE || "").replace(/\/$/, "");
-
   const tabs = document.querySelectorAll(".tab");
   const panelUpload = document.getElementById("panel-upload");
   const panelFetch = document.getElementById("panel-fetch");
@@ -89,20 +84,20 @@
     resultProtein.textContent = data.protein;
 
     const items = [
-      ["Dmax", fmt(data.dmax_nm, "nm"), null],
-      ["Length × Width × Thickness", `${fmt(data.length_nm)} × ${fmt(data.width_nm)} × ${fmt(data.thickness_nm)} nm`, null],
-      ["Volume ratio (vs 268 nm³ cavity)", fmt(data.volume_ratio), data.volume_source],
-      ["SES / grid volume", fmt(data.volume_nm3, "nm³"), data.volume_source],
-      ["Net charge (pH " + fmt(data.ph) + ")", fmt(data.net_charge), data.charge_source],
-      ["Relative shape anisotropy (κ²)", fmt(data.kappa2), null],
+      ["Dmax", fmt(data.dmax_nm, "nm"), "~8.0 nm cavity diameter", null],
+      ["Length × width × thickness", `${fmt(data.length_nm)} × ${fmt(data.width_nm)} × ${fmt(data.thickness_nm)} nm`, "—", null],
+      ["Volume ratio", fmt(data.volume_ratio), "1.00 = full cavity", data.volume_source],
+      ["Molecular volume", fmt(data.volume_nm3, "nm³"), "268 nm³ cavity", data.volume_source],
+      ["Net charge (pH " + fmt(data.ph) + ")", fmt(data.net_charge), `cationic threshold ${fmt(data.cationic_threshold)}`, data.charge_source],
+      ["Shape anisotropy (κ²)", fmt(data.kappa2), "0 = sphere, 1 = rod", null],
     ];
 
-    descriptorGrid.innerHTML = items.map(([label, value, source]) => `
-      <div class="descriptor-item">
-        <span class="label">${label}</span>
-        <span class="value">${value}</span>
-        ${source ? `<span class="source">${source}</span>` : ""}
-      </div>
+    descriptorGrid.innerHTML = items.map(([label, value, ref, source]) => `
+      <tr>
+        <td>${label}</td>
+        <td class="value">${value}${source ? `<span class="source">${source}</span>` : ""}</td>
+        <td class="ref">${ref}</td>
+      </tr>
     `).join("");
 
     if (data.notes && data.notes.length) {
@@ -111,19 +106,12 @@
       notesBlock.innerHTML = `<p class="notes-empty">No caveats flagged for this call.</p>`;
     }
 
-    inputCard.classList.add("hidden");
-    resultCard.classList.remove("hidden");
+    resultCard.classList.remove("is-empty");
     resultCard.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   analyzeBtn.addEventListener("click", async () => {
     clearError();
-
-    if (!API_BASE || API_BASE.includes("YOUR-BACKEND-NAME")) {
-      showError("Set window.ENCAGE_API_BASE in config.js to your deployed backend URL first.");
-      return;
-    }
-
     const activeTab = document.querySelector(".tab.active").dataset.tab;
 
     const form = new FormData();
@@ -144,7 +132,7 @@
     loading.classList.remove("hidden");
 
     try {
-      const res = await fetch(`${API_BASE}/api/analyze`, { method: "POST", body: form });
+      const res = await fetch("/api/analyze", { method: "POST", body: form });
       const data = await res.json();
       if (!res.ok) {
         showError(data.error || "Something went wrong.");
@@ -152,7 +140,7 @@
         renderResult(data);
       }
     } catch (e) {
-      showError("Network error — please check your connection and that the backend URL in config.js is correct.");
+      showError("Network error — please check your connection and try again.");
     } finally {
       analyzeBtn.disabled = false;
       loading.classList.add("hidden");
@@ -160,8 +148,7 @@
   });
 
   document.getElementById("resetBtn").addEventListener("click", () => {
-    resultCard.classList.add("hidden");
-    inputCard.classList.remove("hidden");
+    resultCard.classList.add("is-empty");
     selectedFile = null;
     fileInput.value = "";
     fileNameEl.textContent = "";
