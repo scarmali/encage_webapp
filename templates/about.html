@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="A plain-language guide to enCAGE's assembly regimes (I/II/III) and what each descriptor in your result means." />
+<meta name="description" content="A guide to enCAGE — what it predicts, how the calculations work, and how it performs on known proteins." />
 <meta name="theme-color" content="#1e5faa" />
 <title>About — enCAGE</title>
 <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}" />
@@ -41,127 +41,358 @@
   </div>
 </div>
 
-<main class="article">
-  <a class="back-link" href="{{ url_for('index') }}">← Back to enCAGE</a>
-  <h1 class="page-title">Understanding your enCAGE result</h1>
-  <p class="page-lede">What "assembly regime" means, and how to read the descriptor table — in plain language.</p>
+<main class="wrap">
+  <div class="layout">
 
-  <section class="card">
-    <div class="card-header"><h2>The three assembly regimes</h2></div>
-    <div class="card-body prose">
-      <p>
-        Apoferritin loads a protein cargo by falling apart under acid and reforming once the
-        pH is brought back to neutral — whatever cargo is nearby when the shell closes back up
-        gets swept up inside. Depending on your protein's size, shape, and surface charge, that
-        reassembly plays out one of three ways.
-      </p>
+    <aside class="sidebar">
+      <section class="card">
+        <div class="card-header"><h2>On this page</h2></div>
+        <nav class="about-nav" aria-label="About sections">
+          <button class="about-nav-item" data-section="overview" type="button">
+            <span class="about-nav-title">Overview</span>
+            <span class="about-nav-desc">What is enCAGE?</span>
+          </button>
+          <button class="about-nav-item" data-section="results" type="button">
+            <span class="about-nav-title">Understanding Results</span>
+            <span class="about-nav-desc">What does my prediction mean?</span>
+          </button>
+          <button class="about-nav-item" data-section="descriptors" type="button">
+            <span class="about-nav-title">Descriptors</span>
+            <span class="about-nav-desc">What are these numbers?</span>
+          </button>
+          <button class="about-nav-item" data-section="methods" type="button">
+            <span class="about-nav-title">Methods</span>
+            <span class="about-nav-desc">How are the calculations performed?</span>
+          </button>
+          <button class="about-nav-item" data-section="examples" type="button">
+            <span class="about-nav-title">Examples</span>
+            <span class="about-nav-desc">What does enCAGE predict for known proteins?</span>
+          </button>
+        </nav>
+      </section>
+    </aside>
 
-      <div class="regime-explain-list">
-        <div class="regime-explain">
-          <div class="regime-badge regime-1">
-            <span class="regime-roman">I</span>
-            <span class="regime-text">Efficient luminal encapsulation</span>
+    <section class="main-panel">
+      <a class="back-link" href="{{ url_for('index') }}">← Back to enCAGE</a>
+
+      <div class="about-section" id="section-overview">
+        <h1 class="page-title">Overview</h1>
+        <p class="page-lede">What is enCAGE?</p>
+        <section class="card">
+          <div class="card-body prose">
+            <p>
+              Apoferritin is a 24-subunit protein shell, about 12 nm across, that encloses a
+              hollow ~8 nm cavity. Under acidic conditions the shell falls apart into its
+              individual subunits; neutralising the pH drives it to reform — and whatever cargo
+              happens to be nearby when it closes back up gets swept up inside. This pH-cycling
+              behaviour is widely used to load small molecules and metal nanoparticles into
+              ferritin nanocages, but which <em>protein</em> cargos load cleanly, and which don't,
+              has been harder to predict.
+            </p>
+            <p>
+              <strong>enCAGE</strong> (Cargo Assessment for Guided Encapsulation) answers that
+              question directly from a protein's 3D structure. It computes three physicochemical
+              descriptors — steric compatibility, electrostatic complementarity, and structural
+              organisation — and applies a hierarchical decision rule, calibrated on an
+              experimental cargo panel, to predict which of three assembly regimes a given
+              protein cargo is likely to follow.
+            </p>
+            <p>
+              Use the sections on the left to explore what a prediction means
+              (<strong>Understanding Results</strong>), what each number in your result
+              represents (<strong>Descriptors</strong>), how the calculations are actually
+              performed (<strong>Methods</strong>), and how well the framework holds up against
+              known proteins (<strong>Examples</strong>).
+            </p>
+            <p>
+              enCAGE is a heuristic design aid, not a validated classifier — see
+              <strong>Methods</strong> for the calibration caveats that matter most.
+            </p>
           </div>
-          <p>
-            Your protein is compact, roughly globular, and its surface charge doesn't strongly
-            clash with the negatively charged interior of the cage. It gets swept up cleanly as
-            the shell reforms — the most reliable outcome, with minimal disruption to nanocage
-            shape and no expected penalty to your protein's own activity. In our data, luminal
-            encapsulation actually improved an enzyme's turnover and storage stability.
-          </p>
-          <p class="for-you">What this means for you: expect efficient, reproducible loading.</p>
-        </div>
-
-        <div class="regime-explain">
-          <div class="regime-badge regime-2">
-            <span class="regime-roman">II</span>
-            <span class="regime-text">Accommodation possible — structural-organisation dependent</span>
-          </div>
-          <p>
-            Your protein is larger than the cage's nominal ~8 nm internal space — on paper, it
-            shouldn't fit. But a static structure doesn't capture everything: multidomain
-            proteins that can flex and repack themselves during reassembly can still be
-            accommodated, just less predictably than a Regime I cargo. Because that flexibility
-            can't be read off a single PDB file, this call is a flag, not a guarantee.
-          </p>
-          <p class="for-you">What this means for you: worth testing experimentally, not a "no".</p>
-        </div>
-
-        <div class="regime-explain">
-          <div class="regime-badge regime-3">
-            <span class="regime-roman">III</span>
-            <span class="regime-text">Charge-driven off-pathway assembly</span>
-          </div>
-          <p>
-            Your protein carries a strongly positive surface charge. Rather than being swept
-            neatly inside as the cage reforms, it tends to grab onto the negatively charged
-            subunits directly, clumping into an off-pathway complex instead of a clean, hollow
-            nanocage. The protein isn't destroyed, but the loading pathway is wrong — cage
-            structure is compromised, and, as we saw with lysozyme, enzyme activity can be
-            almost entirely lost because substrates can no longer reach it.
-          </p>
-          <p class="for-you">What this means for you: expect off-pathway clumping, not clean loading — consider reducing the cargo's net charge, or a different cage system.</p>
-        </div>
+        </section>
       </div>
 
-      <p><strong>How the call is made:</strong> charge is checked first, because a strongly
-        cationic surface can override everything else. Then, for charge-compatible cargos,
-        size decides between Regime I (fits within ~8 nm) and Regime II (larger, flagged for
-        structural flexibility).</p>
-      <ol class="decision-steps">
-        <li><strong>Is the surface strongly positively charged</strong> (net charge above the cationic threshold)? If yes → <strong>Regime III</strong>.</li>
-        <li><strong>Otherwise, does the protein's longest dimension (Dmax) fit within ~8 nm?</strong> If yes → <strong>Regime I</strong>.</li>
-        <li><strong>If it's charge-compatible but oversized</strong> → <strong>Regime II</strong>, flagged as worth testing since flexibility can't be judged from a static structure alone.</li>
-      </ol>
-    </div>
-  </section>
+      <div class="about-section hidden" id="section-results">
+        <h1 class="page-title">Understanding Results</h1>
+        <p class="page-lede">What does my prediction mean?</p>
+        <section class="card">
+          <div class="card-header"><h2>The three assembly regimes</h2></div>
+          <div class="card-body prose">
+            <p>
+              Apoferritin loads a protein cargo by falling apart under acid and reforming once
+              the pH is brought back to neutral — whatever cargo is nearby when the shell closes
+              back up gets swept up inside. Depending on your protein's size, shape, and surface
+              charge, that reassembly plays out one of three ways.
+            </p>
 
-  <section class="card">
-    <div class="card-header"><h2>What the descriptor table means</h2></div>
-    <div class="card-body prose">
-      <dl class="glossary">
-        <div class="glossary-item">
-          <dt>Dmax</dt>
-          <dd>The single longest straight-line distance between any two atoms in your protein, in nanometres. This is the strictest test of whether your protein physically fits through the cage's ~8 nm cavity — if Dmax is under 8 nm, your protein's longest "reach" fits inside.</dd>
-        </div>
-        <div class="glossary-item">
-          <dt>Length × width × thickness</dt>
-          <dd>Your protein's bounding box along its three natural axes (longest to shortest), after rotating the structure to align with its own principal axes. This gives a sense of overall shape beyond just Dmax — a rod-shaped and a disc-shaped protein can share a Dmax but have very different proportions.</dd>
-        </div>
-        <div class="glossary-item">
-          <dt>Volume ratio</dt>
-          <dd>The fraction of the cage's internal volume your protein would occupy, treating the cavity as a 268 nm³ sphere (~8 nm across). A ratio of 1.00 would mean your protein alone fills the whole cavity. Even a protein small enough to fit can load less efficiently if it occupies a large share of that space.</dd>
-        </div>
-        <div class="glossary-item">
-          <dt>Molecular volume</dt>
-          <dd>The physical volume of your protein itself, in nm³, before it's expressed as a fraction of the cavity. Estimated with a fast built-in geometric approximation by default, or taken from a ChimeraX solvent-excluded surface if you supplied one under manual overrides.</dd>
-        </div>
-        <div class="glossary-item">
-          <dt>Net charge (pH 7.4)</dt>
-          <dd>Your protein's overall surface charge at physiological pH — estimated with a standard Henderson–Hasselbalch calculation from the sequence, or taken from your own Prot pi value if supplied. This is compared against the cationic threshold (default +5.0) to decide Regime III.</dd>
-        </div>
-        <div class="glossary-item">
-          <dt>Shape anisotropy (κ²)</dt>
-          <dd>A single number from 0 to 1 describing how far your protein departs from a perfect sphere: 0 is perfectly spherical, 1 is a thin rod. Helps you judge whether a large Dmax reflects a genuinely big protein or just an elongated one.</dd>
-        </div>
-      </dl>
-    </div>
-  </section>
+            <div class="regime-explain-list">
+              <div class="regime-explain">
+                <div class="regime-badge regime-1">
+                  <span class="regime-roman">I</span>
+                  <span class="regime-text">Efficient luminal encapsulation</span>
+                </div>
+                <p>
+                  Your protein is compact, roughly globular, and its surface charge doesn't
+                  strongly clash with the negatively charged interior of the cage. It gets swept
+                  up cleanly as the shell reforms — the most reliable outcome, with minimal
+                  disruption to nanocage shape and no expected penalty to your protein's own
+                  activity. In our data, luminal encapsulation actually improved an enzyme's
+                  turnover and storage stability.
+                </p>
+                <p class="for-you">What this means for you: expect efficient, reproducible loading.</p>
+              </div>
 
-  <section class="card">
-    <div class="card-header"><h2>Limitations to keep in mind</h2></div>
-    <div class="card-body prose">
-      <p>
-        enCAGE is a heuristic design aid, not a validated classifier. Its decision thresholds
-        are calibrated on a small in-house cargo panel (equine apoferritin, pH cycling) and are
-        exposed as adjustable parameters so they can be refined as more data accrues. Treat
-        Regime II calls especially as "worth testing", not certainty — and if you have a
-        ChimeraX solvent-excluded volume or a Prot pi net charge for your protein, supplying
-        them under manual overrides will give you the manuscript-consistent numbers instead of
-        the built-in estimates.
-      </p>
-    </div>
-  </section>
+              <div class="regime-explain">
+                <div class="regime-badge regime-2">
+                  <span class="regime-roman">II</span>
+                  <span class="regime-text">Accommodation possible — structural-organisation dependent</span>
+                </div>
+                <p>
+                  Your protein is larger than the cage's nominal ~8 nm internal space — on
+                  paper, it shouldn't fit. But a static structure doesn't capture everything:
+                  multidomain proteins that can flex and repack themselves during reassembly can
+                  still be accommodated, just less predictably than a Regime I cargo. Because
+                  that flexibility can't be read off a single PDB file, this call is a flag, not
+                  a guarantee.
+                </p>
+                <p class="for-you">What this means for you: worth testing experimentally, not a "no".</p>
+              </div>
+
+              <div class="regime-explain">
+                <div class="regime-badge regime-3">
+                  <span class="regime-roman">III</span>
+                  <span class="regime-text">Charge-driven off-pathway assembly</span>
+                </div>
+                <p>
+                  Your protein carries a strongly positive surface charge. Rather than being
+                  swept neatly inside as the cage reforms, it tends to grab onto the negatively
+                  charged subunits directly, clumping into an off-pathway complex instead of a
+                  clean, hollow nanocage. The protein isn't destroyed, but the loading pathway is
+                  wrong — cage structure is compromised, and, as we saw with lysozyme, enzyme
+                  activity can be almost entirely lost because substrates can no longer reach it.
+                </p>
+                <p class="for-you">What this means for you: expect off-pathway clumping, not clean loading — consider reducing the cargo's net charge, or a different cage system.</p>
+              </div>
+            </div>
+
+            <p><strong>How the call is made:</strong> charge is checked first, because a strongly
+              cationic surface can override everything else. Then, for charge-compatible cargos,
+              size decides between Regime I (fits within ~8 nm) and Regime II (larger, flagged
+              for structural flexibility).</p>
+            <ol class="decision-steps">
+              <li><strong>Is the surface strongly positively charged</strong> (net charge above the cationic threshold)? If yes → <strong>Regime III</strong>.</li>
+              <li><strong>Otherwise, does the protein's longest dimension (Dmax) fit within ~8 nm?</strong> If yes → <strong>Regime I</strong>.</li>
+              <li><strong>If it's charge-compatible but oversized</strong> → <strong>Regime II</strong>, flagged as worth testing since flexibility can't be judged from a static structure alone.</li>
+            </ol>
+          </div>
+        </section>
+      </div>
+
+      <div class="about-section hidden" id="section-descriptors">
+        <h1 class="page-title">Descriptors</h1>
+        <p class="page-lede">What are these numbers?</p>
+        <section class="card">
+          <div class="card-header"><h2>What the descriptor table means</h2></div>
+          <div class="card-body prose">
+            <dl class="glossary">
+              <div class="glossary-item">
+                <dt>Dmax</dt>
+                <dd>The single longest straight-line distance between any two atoms in your protein, in nanometres. This is the strictest test of whether your protein physically fits through the cage's ~8 nm cavity — if Dmax is under 8 nm, your protein's longest "reach" fits inside.</dd>
+              </div>
+              <div class="glossary-item">
+                <dt>Length × width × thickness</dt>
+                <dd>Your protein's bounding box along its three natural axes (longest to shortest), after rotating the structure to align with its own principal axes. This gives a sense of overall shape beyond just Dmax — a rod-shaped and a disc-shaped protein can share a Dmax but have very different proportions.</dd>
+              </div>
+              <div class="glossary-item">
+                <dt>Volume ratio</dt>
+                <dd>The fraction of the cage's internal volume your protein would occupy, treating the cavity as a 268 nm³ sphere (~8 nm across). A ratio of 1.00 would mean your protein alone fills the whole cavity. Even a protein small enough to fit can load less efficiently if it occupies a large share of that space.</dd>
+              </div>
+              <div class="glossary-item">
+                <dt>Molecular volume</dt>
+                <dd>The physical volume of your protein itself, in nm³, before it's expressed as a fraction of the cavity. Estimated with a fast built-in geometric approximation by default, or taken from a ChimeraX solvent-excluded surface if you supplied one under manual overrides.</dd>
+              </div>
+              <div class="glossary-item">
+                <dt>Net charge (pH 7.4)</dt>
+                <dd>Your protein's overall surface charge at physiological pH — estimated with a standard Henderson–Hasselbalch calculation from the sequence, or taken from your own Prot pi value if supplied. This is compared against the cationic threshold (default +5.0) to decide Regime III.</dd>
+              </div>
+              <div class="glossary-item">
+                <dt>Shape anisotropy (κ²)</dt>
+                <dd>A single number from 0 to 1 describing how far your protein departs from a perfect sphere: 0 is perfectly spherical, 1 is a thin rod. Helps you judge whether a large Dmax reflects a genuinely big protein or just an elongated one.</dd>
+              </div>
+            </dl>
+          </div>
+        </section>
+      </div>
+
+      <div class="about-section hidden" id="section-methods">
+        <h1 class="page-title">Methods</h1>
+        <p class="page-lede">How are the calculations performed?</p>
+
+        <section class="card">
+          <div class="card-header"><h2>Geometry, from a single PDB file</h2></div>
+          <div class="card-body prose">
+            <p>
+              enCAGE reads the heavy atoms (hydrogens excluded) from your structure using
+              Biopython. The coordinates are centred on their centroid and rotated onto their own
+              principal axes — via principal component analysis of the coordinate covariance
+              matrix — which puts the protein's natural long, medium, and short axes into a
+              consistent frame regardless of how the original structure happened to be oriented
+              in the PDB file.
+            </p>
+            <ul class="method-list">
+              <li><strong>Length × width × thickness</strong> are the extents along these three principal axes.</li>
+              <li><strong>Dmax</strong> is the largest pairwise distance between any two heavy atoms, computed directly (very large structures are randomly subsampled for speed).</li>
+              <li><strong>Shape anisotropy (κ²)</strong> comes from the same principal-axis analysis, using the standard relative-shape-anisotropy formula — independent of overall size.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-header"><h2>Molecular volume</h2></div>
+          <div class="card-body prose">
+            <p>
+              By default, volume is estimated with a fast, dependency-free grid-based
+              approximation: a 3D grid is laid over the structure, and any grid point falling
+              within an atom's van der Waals radius counts as occupied. This is quick to compute
+              but underestimates the true solvent-excluded volume, since it doesn't roll a
+              solvent probe over the surface the way ChimeraX does. If you supply a ChimeraX
+              solvent-excluded surface volume (probe radius 1.4 Å) under manual overrides, that
+              value is used verbatim instead, matching the numbers in the manuscript.
+            </p>
+            <p>
+              The volume ratio compares this to a fixed 268 nm³ reference cavity (a sphere ~8 nm
+              across) — the estimated internal volume of the equine apoferritin lumen.
+            </p>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-header"><h2>Net surface charge</h2></div>
+          <div class="card-body prose">
+            <p>
+              By default, net charge is estimated with a standard Henderson–Hasselbalch
+              calculation from the protein's sequence, summing the fractional charge on the N-
+              and C-termini and every ionisable side chain (Lys, Arg, His, Asp, Glu, Cys, Tyr) at
+              the specified pH, using a standard set of pKa values. This is a simplification — it
+              ignores local electrostatic environment and structural burial — so if you have a
+              more rigorous value (e.g. from Prot pi), supplying it under manual overrides will
+              be used instead.
+            </p>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-header"><h2>The regime decision, and its limits</h2></div>
+          <div class="card-body prose">
+            <p>
+              The three descriptors feed into a fixed hierarchy: net charge is evaluated first,
+              because a strongly cationic surface can override everything else and divert the
+              cargo into off-pathway assembly (Regime III). Charge-compatible cargos are then
+              sorted by Dmax against the ~8 nm cavity diameter into Regime I (fits) or Regime II
+              (oversized, flagged for structural flexibility that can't be assessed from a single
+              static structure).
+            </p>
+            <p>
+              These thresholds — the default pH of 7.4 and the +5.0 cationic cutoff — are
+              calibrated on a small in-house cargo panel (equine apoferritin, pH cycling)
+              described in the accompanying manuscript, and are exposed as adjustable parameters
+              in the tool rather than hard-coded. enCAGE is a heuristic design aid, not a
+              validated classifier: treat Regime II calls especially as "worth testing", not
+              certainty, and expect the quantitative thresholds to need re-tuning for ferritin
+              systems that assemble by a different mechanism — see Examples.
+            </p>
+          </div>
+        </section>
+      </div>
+
+      <div class="about-section hidden" id="section-examples">
+        <h1 class="page-title">Examples</h1>
+        <p class="page-lede">What does enCAGE predict for known proteins?</p>
+
+        <section class="card">
+          <div class="card-header"><h2>Try the in-house cargo panel</h2></div>
+          <div class="card-body prose">
+            <p>
+              The three proteins used to calibrate enCAGE are built into the homepage as
+              one-click examples — each fetches the structure live from RCSB and runs the full
+              analysis.
+            </p>
+            <div class="example-list">
+              <a class="example-item" href="{{ url_for('index') }}">
+                <span class="example-meta">
+                  <span class="example-name">α-Chymotrypsin</span>
+                  <span class="example-pdb">PDB 4CHA — compact, near-neutral charge</span>
+                </span>
+                <span class="example-regime-chip regime-1">Regime I</span>
+              </a>
+              <a class="example-item" href="{{ url_for('index') }}">
+                <span class="example-meta">
+                  <span class="example-name">Human serum albumin</span>
+                  <span class="example-pdb">PDB 1AO6 — oversized, multidomain</span>
+                </span>
+                <span class="example-regime-chip regime-2">Regime II</span>
+              </a>
+              <a class="example-item" href="{{ url_for('index') }}">
+                <span class="example-meta">
+                  <span class="example-name">Lysozyme</span>
+                  <span class="example-pdb">PDB 1LYZ — strongly cationic</span>
+                </span>
+                <span class="example-regime-chip regime-3">Regime III</span>
+              </a>
+            </div>
+            <p class="hint">Look for "Try an example protein" in the input panel on the homepage.</p>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-header"><h2>External validation from the literature</h2></div>
+          <div class="card-body prose">
+            <p>
+              The same three descriptors were also applied retrospectively to independently
+              published cargo–ferritin systems. Steric compatibility (cavity occupancy) held up
+              cleanly across every system. Electrostatics is more nuanced: it remains the key
+              determinant of outcome everywhere, but the direction and threshold are specific to
+              how a given cage assembles — equine apoferritin reforms passively and is disrupted
+              by very cationic cargo, whereas AfFtn actively co-assembles around cationic cargo,
+              so equine-calibrated regime labels don't transfer directly to it (see footnotes).
+            </p>
+            <div class="validation-table-wrap">
+              <table class="validation-table">
+                <thead>
+                  <tr><th>Cargo</th><th>Cage</th><th>Net charge<br/>(pH 7.4)</th><th>Reported outcome</th><th>Equine-rule regime</th></tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Cytochrome c1 (chimeric)</td><td>AfFtn</td><td>+8.4</td><td>Encapsulated</td>
+                    <td><span class="example-regime-chip regime-3">III<sup>a</sup></span></td>
+                  </tr>
+                  <tr>
+                    <td>GFP (+36, supercharged)</td><td>AfFtn</td><td>+36</td><td>Encapsulated</td>
+                    <td><span class="example-regime-chip regime-3">III<sup>a</sup></span></td>
+                  </tr>
+                  <tr>
+                    <td>GFP</td><td>AfFtn</td><td>−7.6</td><td>Not encapsulated</td>
+                    <td><span class="example-regime-chip regime-1">I<sup>a</sup></span></td>
+                  </tr>
+                  <tr>
+                    <td>GFP (−30, supercharged)</td><td>AfFtn</td><td>−30</td><td>Not encapsulated</td>
+                    <td><span class="example-regime-chip regime-1">I<sup>a</sup></span></td>
+                  </tr>
+                  <tr>
+                    <td>[3Fe–4S] ferredoxin</td><td><em>E. coli</em> Bfr</td><td>−8.1</td><td>Encapsulated (4–6 per cage)</td>
+                    <td><span class="example-regime-chip regime-1">I<sup>b</sup></span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="footnote"><sup>a</sup> AfFtn assembles by co-forming around a sufficiently cationic cargo — the opposite mechanism to equine apoferritin's passive pH-cycling. So a cationic cargo flagged as off-pathway (Regime III) by the equine-calibrated rule can encapsulate cleanly in AfFtn, while a cargo that looks charge-compatible (Regime I) by the same rule can fail to encapsulate if it isn't cationic enough to trigger AfFtn's assembly.</p>
+            <p class="footnote"><sup>b</sup> This acidic cargo is anchored by a cage-specific hydrophobic pocket in Bfr, not by electrostatic complementarity — a reminder that steric fit alone doesn't guarantee the driving mechanism is charge-based.</p>
+          </div>
+        </section>
+      </div>
+    </section>
+
+  </div>
 </main>
 
 <footer class="site-footer">
@@ -192,5 +423,6 @@
   </div>
 </footer>
 
+<script src="{{ url_for('static', filename='about.js') }}"></script>
 </body>
 </html>
