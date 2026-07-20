@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="A plain-language guide to enCAGE's assembly regimes (I/II/III) and what each descriptor in your result means." />
+<meta name="theme-color" content="#1e5faa" />
+<title>About — enCAGE</title>
+<link rel="icon" type="image/png" href="favicon.png" />
+<link rel="apple-touch-icon" href="apple-touch-icon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="toolbar-inner">
+    <a href="index.html" class="toolbar-brand" style="text-decoration:none;">
+      <img class="logo-mark" src="logo.png" alt="enCAGE logo" width="44" height="44" />
+      <div class="toolbar-brand-text">
+        <span class="name"><span class="name-en">en</span><span class="name-cage">CAGE</span></span>
+        <span class="tag">Cargo Assessment for Guided Encapsulation</span>
+      </div>
+    </a>
+    <nav class="toolbar-nav">
+      <a class="toolbar-link" href="index.html">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9h13v-9"/></svg>
+        <span class="label">Analyze a protein</span>
+      </a>
+      <a class="toolbar-link" href="https://github.com/scarmali/encage_webapp" target="_blank" rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.58 2 12.19c0 4.5 2.87 8.31 6.84 9.66.5.1.68-.22.68-.49 0-.24-.01-.87-.01-1.71-2.78.62-3.37-1.37-3.37-1.37-.45-1.18-1.11-1.49-1.11-1.49-.91-.64.07-.63.07-.63 1 .07 1.53 1.05 1.53 1.05.89 1.57 2.34 1.11 2.91.85.09-.66.35-1.11.63-1.37-2.22-.26-4.56-1.14-4.56-5.06 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.31.1-2.73 0 0 .84-.28 2.75 1.05a9.3 9.3 0 0 1 5 0c1.9-1.33 2.75-1.05 2.75-1.05.55 1.42.2 2.47.1 2.73.64.72 1.03 1.63 1.03 2.75 0 3.93-2.34 4.79-4.57 5.05.36.32.68.94.68 1.9 0 1.37-.01 2.48-.01 2.81 0 .27.18.6.69.49A10.02 10.02 0 0 0 22 12.19C22 6.58 17.52 2 12 2Z"/></svg>
+        <span class="label">GitHub</span>
+      </a>
+      <a class="toolbar-link" href="https://carmali-lab.com/" target="_blank" rel="noopener">
+        <img src="https://carmali-lab.com/images/logo.png" alt="Carmali Lab logo" />
+        <span class="label">Carmali Lab</span>
+      </a>
+    </nav>
+  </div>
+</div>
+
+<main class="article">
+  <a class="back-link" href="index.html">← Back to enCAGE</a>
+  <h1 class="page-title">Understanding your enCAGE result</h1>
+  <p class="page-lede">What "assembly regime" means, and how to read the descriptor table — in plain language.</p>
+
+  <section class="card">
+    <div class="card-header"><h2>The three assembly regimes</h2></div>
+    <div class="card-body prose">
+      <p>
+        Apoferritin loads a protein cargo by falling apart under acid and reforming once the
+        pH is brought back to neutral — whatever cargo is nearby when the shell closes back up
+        gets swept up inside. Depending on your protein's size, shape, and surface charge, that
+        reassembly plays out one of three ways.
+      </p>
+
+      <div class="regime-explain-list">
+        <div class="regime-explain">
+          <div class="regime-badge regime-1">
+            <span class="regime-roman">I</span>
+            <span class="regime-text">Efficient luminal encapsulation</span>
+          </div>
+          <p>
+            Your protein is compact, roughly globular, and its surface charge doesn't strongly
+            clash with the negatively charged interior of the cage. It gets swept up cleanly as
+            the shell reforms — the most reliable outcome, with minimal disruption to nanocage
+            shape and no expected penalty to your protein's own activity. In our data, luminal
+            encapsulation actually improved an enzyme's turnover and storage stability.
+          </p>
+          <p class="for-you">What this means for you: expect efficient, reproducible loading.</p>
+        </div>
+
+        <div class="regime-explain">
+          <div class="regime-badge regime-2">
+            <span class="regime-roman">II</span>
+            <span class="regime-text">Accommodation possible — structural-organisation dependent</span>
+          </div>
+          <p>
+            Your protein is larger than the cage's nominal ~8 nm internal space — on paper, it
+            shouldn't fit. But a static structure doesn't capture everything: multidomain
+            proteins that can flex and repack themselves during reassembly can still be
+            accommodated, just less predictably than a Regime I cargo. Because that flexibility
+            can't be read off a single PDB file, this call is a flag, not a guarantee.
+          </p>
+          <p class="for-you">What this means for you: worth testing experimentally, not a "no".</p>
+        </div>
+
+        <div class="regime-explain">
+          <div class="regime-badge regime-3">
+            <span class="regime-roman">III</span>
+            <span class="regime-text">Charge-driven off-pathway assembly</span>
+          </div>
+          <p>
+            Your protein carries a strongly positive surface charge. Rather than being swept
+            neatly inside as the cage reforms, it tends to grab onto the negatively charged
+            subunits directly, clumping into an off-pathway complex instead of a clean, hollow
+            nanocage. The protein isn't destroyed, but the loading pathway is wrong — cage
+            structure is compromised, and, as we saw with lysozyme, enzyme activity can be
+            almost entirely lost because substrates can no longer reach it.
+          </p>
+          <p class="for-you">What this means for you: expect off-pathway clumping, not clean loading — consider reducing the cargo's net charge, or a different cage system.</p>
+        </div>
+      </div>
+
+      <p><strong>How the call is made:</strong> charge is checked first, because a strongly
+        cationic surface can override everything else. Then, for charge-compatible cargos,
+        size decides between Regime I (fits within ~8 nm) and Regime II (larger, flagged for
+        structural flexibility).</p>
+      <ol class="decision-steps">
+        <li><strong>Is the surface strongly positively charged</strong> (net charge above the cationic threshold)? If yes → <strong>Regime III</strong>.</li>
+        <li><strong>Otherwise, does the protein's longest dimension (Dmax) fit within ~8 nm?</strong> If yes → <strong>Regime I</strong>.</li>
+        <li><strong>If it's charge-compatible but oversized</strong> → <strong>Regime II</strong>, flagged as worth testing since flexibility can't be judged from a static structure alone.</li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-header"><h2>What the descriptor table means</h2></div>
+    <div class="card-body prose">
+      <dl class="glossary">
+        <div class="glossary-item">
+          <dt>Dmax</dt>
+          <dd>The single longest straight-line distance between any two atoms in your protein, in nanometres. This is the strictest test of whether your protein physically fits through the cage's ~8 nm cavity — if Dmax is under 8 nm, your protein's longest "reach" fits inside.</dd>
+        </div>
+        <div class="glossary-item">
+          <dt>Length × width × thickness</dt>
+          <dd>Your protein's bounding box along its three natural axes (longest to shortest), after rotating the structure to align with its own principal axes. This gives a sense of overall shape beyond just Dmax — a rod-shaped and a disc-shaped protein can share a Dmax but have very different proportions.</dd>
+        </div>
+        <div class="glossary-item">
+          <dt>Volume ratio</dt>
+          <dd>The fraction of the cage's internal volume your protein would occupy, treating the cavity as a 268 nm³ sphere (~8 nm across). A ratio of 1.00 would mean your protein alone fills the whole cavity. Even a protein small enough to fit can load less efficiently if it occupies a large share of that space.</dd>
+        </div>
+        <div class="glossary-item">
+          <dt>Molecular volume</dt>
+          <dd>The physical volume of your protein itself, in nm³, before it's expressed as a fraction of the cavity. Estimated with a fast built-in geometric approximation by default, or taken from a ChimeraX solvent-excluded surface if you supplied one under manual overrides.</dd>
+        </div>
+        <div class="glossary-item">
+          <dt>Net charge (pH 7.4)</dt>
+          <dd>Your protein's overall surface charge at physiological pH — estimated with a standard Henderson–Hasselbalch calculation from the sequence, or taken from your own Prot pi value if supplied. This is compared against the cationic threshold (default +5.0) to decide Regime III.</dd>
+        </div>
+        <div class="glossary-item">
+          <dt>Shape anisotropy (κ²)</dt>
+          <dd>A single number from 0 to 1 describing how far your protein departs from a perfect sphere: 0 is perfectly spherical, 1 is a thin rod. Helps you judge whether a large Dmax reflects a genuinely big protein or just an elongated one.</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-header"><h2>Limitations to keep in mind</h2></div>
+    <div class="card-body prose">
+      <p>
+        enCAGE is a heuristic design aid, not a validated classifier. Its decision thresholds
+        are calibrated on a small in-house cargo panel (equine apoferritin, pH cycling) and are
+        exposed as adjustable parameters so they can be refined as more data accrues. Treat
+        Regime II calls especially as "worth testing", not certainty — and if you have a
+        ChimeraX solvent-excluded volume or a Prot pi net charge for your protein, supplying
+        them under manual overrides will give you the manuscript-consistent numbers instead of
+        the built-in estimates.
+      </p>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <img class="logo-mark" src="logo.png" alt="enCAGE logo" width="45" height="45" />
+      <div>
+        <p class="name"><span class="name-en">en</span><span class="name-cage">CAGE</span></p>
+        <p class="desc">Descriptor-guided framework for predicting protein encapsulation in apoferritin nanocages.</p>
+      </div>
+    </div>
+    <div class="footer-links">
+      <a href="https://carmali-lab.com/" target="_blank" rel="noopener">
+        <img src="https://carmali-lab.com/images/logo.png" alt="Carmali Lab logo" /> Carmali Lab
+      </a>
+      <a href="https://github.com/scarmali/encage_webapp" target="_blank" rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.58 2 12.19c0 4.5 2.87 8.31 6.84 9.66.5.1.68-.22.68-.49 0-.24-.01-.87-.01-1.71-2.78.62-3.37-1.37-3.37-1.37-.45-1.18-1.11-1.49-1.11-1.49-.91-.64.07-.63.07-.63 1 .07 1.53 1.05 1.53 1.05.89 1.57 2.34 1.11 2.91.85.09-.66.35-1.11.63-1.37-2.22-.26-4.56-1.14-4.56-5.06 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.31.1-2.73 0 0 .84-.28 2.75 1.05a9.3 9.3 0 0 1 5 0c1.9-1.33 2.75-1.05 2.75-1.05.55 1.42.2 2.47.1 2.73.64.72 1.03 1.63 1.03 2.75 0 3.93-2.34 4.79-4.57 5.05.36.32.68.94.68 1.9 0 1.37-.01 2.48-.01 2.81 0 .27.18.6.69.49A10.02 10.02 0 0 0 22 12.19C22 6.58 17.52 2 12 2Z"/></svg>
+        Source code
+      </a>
+      <a href="mailto:s.carmali@qub.ac.uk">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+        Contact
+      </a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 Carmali Lab, School of Pharmacy, Queen's University Belfast.</p>
+  </div>
+</footer>
+
+</body>
+</html>

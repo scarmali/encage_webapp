@@ -3,125 +3,333 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="Predict how a protein cargo will assemble inside a ferritin nanocage — upload a PDB structure or enter a PDB ID to get an instant regime prediction." />
+<meta name="theme-color" content="#1e5faa" />
 <title>enCAGE — Ferritin Encapsulation Predictor</title>
+<link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}" />
+<link rel="apple-touch-icon" href="{{ url_for('static', filename='apple-touch-icon.png') }}" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
 </head>
 <body>
 
-<header class="topbar">
-  <div class="topbar-inner">
-    <div class="brand">
-      <span class="brand-mark">enCAGE</span>
-      <span class="brand-sub">Cargo Assessment for Guided Encapsulation</span>
+<div class="toolbar">
+  <div class="toolbar-inner">
+    <div class="toolbar-brand">
+      <img class="logo-mark" src="{{ url_for('static', filename='logo.png') }}" alt="enCAGE logo" width="44" height="44" />
+      <div class="toolbar-brand-text">
+        <span class="name"><span class="name-en">en</span><span class="name-cage">CAGE</span></span>
+        <span class="tag">Cargo Assessment for Guided Encapsulation</span>
+      </div>
     </div>
+    <nav class="toolbar-nav">
+      <a class="toolbar-link" href="{{ url_for('about') }}">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5" stroke-linecap="round"/><circle cx="12" cy="7.8" r="0.9" fill="currentColor" stroke="none"/></svg>
+        <span class="label">About</span>
+      </a>
+      <a class="toolbar-link" href="https://github.com/scarmali/encage_webapp" target="_blank" rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.58 2 12.19c0 4.5 2.87 8.31 6.84 9.66.5.1.68-.22.68-.49 0-.24-.01-.87-.01-1.71-2.78.62-3.37-1.37-3.37-1.37-.45-1.18-1.11-1.49-1.11-1.49-.91-.64.07-.63.07-.63 1 .07 1.53 1.05 1.53 1.05.89 1.57 2.34 1.11 2.91.85.09-.66.35-1.11.63-1.37-2.22-.26-4.56-1.14-4.56-5.06 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.31.1-2.73 0 0 .84-.28 2.75 1.05a9.3 9.3 0 0 1 5 0c1.9-1.33 2.75-1.05 2.75-1.05.55 1.42.2 2.47.1 2.73.64.72 1.03 1.63 1.03 2.75 0 3.93-2.34 4.79-4.57 5.05.36.32.68.94.68 1.9 0 1.37-.01 2.48-.01 2.81 0 .27.18.6.69.49A10.02 10.02 0 0 0 22 12.19C22 6.58 17.52 2 12 2Z"/></svg>
+        <span class="label">GitHub</span>
+      </a>
+      <a class="toolbar-link" href="https://carmali-lab.com/" target="_blank" rel="noopener">
+        <img src="https://carmali-lab.com/images/logo.png" alt="Carmali Lab logo" />
+        <span class="label">Carmali Lab</span>
+      </a>
+    </nav>
   </div>
-</header>
+</div>
 
 <main class="wrap">
+  <div class="layout">
 
-  <section class="intro">
-    <h1>Predict your protein's ferritin encapsulation regime</h1>
-    <p>
-      Upload a PDB structure (or fetch one by ID) to estimate whether a cargo protein
-      is likely to undergo <strong>efficient luminal encapsulation</strong> (Regime I),
-      <strong>steric/structural accommodation</strong> (Regime II), or
-      <strong>charge-driven off-pathway assembly</strong> (Regime III) in apoferritin
-      nanocages, based on net charge, size, and cavity occupancy descriptors.
-    </p>
-  </section>
+    <aside class="sidebar">
+      <section class="card input-card">
+        <div class="card-header"><h2>1. Add your protein</h2></div>
+        <div class="card-body">
 
-  <section class="card input-card">
+          <div class="input-options" role="tablist">
+            <button class="input-option io-upload active" data-option="upload" role="tab" aria-selected="true">
+              <span class="input-option-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0-12 4.5 4.5M12 3 7.5 7.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 16.5V19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+              <span class="input-option-text">
+                <span class="input-option-title">Upload PDB file</span>
+                <span class="input-option-desc">Upload a .pdb file from your device</span>
+              </span>
+            </button>
 
-    <div class="tabs" role="tablist">
-      <button class="tab active" data-tab="upload" role="tab" aria-selected="true">Upload PDB file</button>
-      <button class="tab" data-tab="fetch" role="tab" aria-selected="false">Fetch by PDB ID</button>
-    </div>
+            <button class="input-option io-fetch" data-option="fetch" role="tab" aria-selected="false">
+              <span class="input-option-icon">ID</span>
+              <span class="input-option-text">
+                <span class="input-option-title">Enter PDB ID</span>
+                <span class="input-option-desc">Enter a 4-character PDB ID (e.g. 1AO6)</span>
+              </span>
+            </button>
 
-    <div class="tab-panel" id="panel-upload">
-      <label class="dropzone" id="dropzone" for="fileInput">
-        <input type="file" id="fileInput" accept=".pdb,.ent" hidden />
-        <div class="dropzone-content">
-          <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.6">
-            <path d="M12 3v12m0-12 4.5 4.5M12 3 7.5 7.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M4 16.5V19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          <p><strong>Tap to choose a file</strong><br/>or drag & drop a .pdb here</p>
-          <p class="file-name" id="fileName"></p>
+            <button class="input-option io-example" data-option="example" role="tab" aria-selected="false">
+              <span class="input-option-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2.5 14.6 8.9 21.5 9.5 16.2 13.9 17.8 20.7 12 17 6.2 20.7 7.8 13.9 2.5 9.5 9.4 8.9Z" stroke-linejoin="round"/></svg>
+              </span>
+              <span class="input-option-text">
+                <span class="input-option-title">Try an example protein</span>
+                <span class="input-option-desc">Explore example proteins with known outcomes</span>
+              </span>
+            </button>
+          </div>
+
+          <div class="input-panels">
+            <div class="tab-panel" id="panel-upload">
+              <label class="dropzone" id="dropzone" for="fileInput">
+                <input type="file" id="fileInput" accept=".pdb,.ent" hidden />
+                <div class="dropzone-content">
+                  <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6">
+                    <path d="M12 3v12m0-12 4.5 4.5M12 3 7.5 7.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M4 16.5V19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <p><strong>Tap to choose a file</strong><br/>or drag & drop a .pdb here</p>
+                  <p class="file-name" id="fileName"></p>
+                </div>
+              </label>
+            </div>
+
+            <div class="tab-panel hidden" id="panel-fetch">
+              <label class="field-label" for="pdbIdInput">RCSB PDB ID</label>
+              <input class="text-input" id="pdbIdInput" type="text" maxlength="4" placeholder="e.g. 4CHA" autocapitalize="characters" autocomplete="off" />
+              <p class="hint">Fetched live from files.rcsb.org. No upload needed.</p>
+            </div>
+
+            <div class="tab-panel hidden" id="panel-example">
+              <div class="example-list">
+                <button class="example-item" type="button" data-pdb="4CHA">
+                  <span class="example-meta">
+                    <span class="example-name">α-Chymotrypsin</span>
+                    <span class="example-pdb">PDB 4CHA</span>
+                  </span>
+                  <span class="example-regime-chip regime-1">Regime I</span>
+                </button>
+                <button class="example-item" type="button" data-pdb="1AO6">
+                  <span class="example-meta">
+                    <span class="example-name">Human serum albumin</span>
+                    <span class="example-pdb">PDB 1AO6</span>
+                  </span>
+                  <span class="example-regime-chip regime-2">Regime II</span>
+                </button>
+                <button class="example-item" type="button" data-pdb="1LYZ">
+                  <span class="example-meta">
+                    <span class="example-name">Lysozyme</span>
+                    <span class="example-pdb">PDB 1LYZ</span>
+                  </span>
+                  <span class="example-regime-chip regime-3">Regime III</span>
+                </button>
+              </div>
+              <p class="hint">Picked from a validated cargo panel. One click runs the analysis.</p>
+            </div>
+          </div>
         </div>
-      </label>
-    </div>
+      </section>
 
-    <div class="tab-panel hidden" id="panel-fetch">
-      <label class="field-label" for="pdbIdInput">RCSB PDB ID</label>
-      <input class="text-input" id="pdbIdInput" type="text" maxlength="4" placeholder="e.g. 4CHA" autocapitalize="characters" autocomplete="off" />
-      <p class="hint">Fetched live from files.rcsb.org — no upload needed.</p>
-    </div>
+      <section class="card">
+        <div class="card-header"><h2>2. Conditions</h2></div>
+        <div class="card-body">
+          <div class="field-grid">
+            <div>
+              <label class="field-label" for="phInput">pH</label>
+              <input class="text-input" id="phInput" type="number" step="0.1" placeholder="7.4" />
+            </div>
+            <div>
+              <label class="field-label" for="cationicInput">Cationic threshold</label>
+              <input class="text-input" id="cationicInput" type="number" step="0.1" placeholder="5.0" />
+            </div>
+          </div>
+          <p class="hint">
+            Leave blank to use defaults (pH 7.4; net charge ≥ 5.0 flags off-pathway assembly).
+          </p>
 
-    <details class="advanced">
-      <summary>Advanced options (optional)</summary>
-      <div class="advanced-grid">
-        <div>
-          <label class="field-label" for="phInput">pH</label>
-          <input class="text-input" id="phInput" type="number" step="0.1" placeholder="7.4" />
+          <details class="advanced">
+            <summary>Advanced overrides</summary>
+            <div class="advanced-grid">
+              <div>
+                <label class="field-label" for="chargeOverride">Net charge</label>
+                <input class="text-input" id="chargeOverride" type="number" step="0.1" placeholder="From Prot pi" />
+              </div>
+              <div>
+                <label class="field-label" for="volumeOverride">SES volume (Å³)</label>
+                <input class="text-input" id="volumeOverride" type="number" step="1" placeholder="From ChimeraX" />
+              </div>
+            </div>
+            <p class="hint">
+              Volume is estimated with a fast grid-based approximation by default. For
+              increased accuracy, please supply a ChimeraX solvent-excluded volume
+              and/or a Prot pi net charge above.
+            </p>
+          </details>
         </div>
-        <div>
-          <label class="field-label" for="cationicInput">Cationic threshold (net charge)</label>
-          <input class="text-input" id="cationicInput" type="number" step="0.1" placeholder="5.0" />
+      </section>
+
+      <button class="btn-primary" id="analyzeBtn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7Z"/></svg>
+        Run enCAGE analysis
+      </button>
+
+      <ul class="info-checklist">
+        <li>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 6v6c0 5 3.4 8.5 8 10 4.6-1.5 8-5 8-10V6l-8-4Z"/></svg>
+          Structures are processed transiently, never stored
+        </li>
+        <li>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 10V6a1 1 0 0 0-2 0v4M6 10h12v9a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-9Z"/></svg>
+          Results generated in seconds
+        </li>
+        <li>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 2v6L4 19a2 2 0 0 0 1.8 3h12.4A2 2 0 0 0 20 19l-5-11V2"/><path d="M9 2h6M6 15h12"/></svg>
+          Built on experimentally derived descriptors
+        </li>
+      </ul>
+      <p class="help-hint">Need help? See the <a href="{{ url_for('about') }}">About page</a>.</p>
+      <p class="error-msg hidden" id="errorMsg"></p>
+    </aside>
+
+    <section class="main-panel is-empty" id="resultCard">
+
+      <div class="welcome" id="emptyState">
+        <h1>Will your protein fit inside <span class="grad-word">ferritin?</span></h1>
+        <p class="desc">
+          enCAGE estimates how compatible your protein is with apoferritin encapsulation
+          using experimentally derived structural descriptors.
+        </p>
+        <p class="hero-quickstart">
+          <span class="mini-icon blue"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 3v12m0-12 4.5 4.5M12 3 7.5 7.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          Upload a PDB file,
+          <span class="mini-icon green">ID</span>
+          enter a PDB ID,
+          <span class="mini-icon orange"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2.5 14.6 8.9 21.5 9.5 16.2 13.9 17.8 20.7 12 17 6.2 20.7 7.8 13.9 2.5 9.5 9.4 8.9Z" stroke-linejoin="round"/></svg></span>
+          or try one of our <a href="#" id="tryExampleLink">example proteins</a> to get started.
+        </p>
+
+        <div class="feature-grid">
+          <div class="feature-card f1">
+            <span class="icon"><img src="{{ url_for('static', filename='icon-structure-aware.png') }}" alt="" width="52" height="52" /></span>
+            <span class="title">Size &amp; Shape</span>
+            <span class="desc">Evaluates whether your protein can physically fit within the ferritin cavity.</span>
+          </div>
+          <div class="feature-card f2">
+            <span class="icon"><img src="{{ url_for('static', filename='icon-charge-informed.png') }}" alt="" width="52" height="52" /></span>
+            <span class="title">Surface Charge</span>
+            <span class="desc">Assesses electrostatic compatibility with the negatively charged interior of ferritin.</span>
+          </div>
+          <div class="feature-card f3">
+            <span class="icon"><img src="{{ url_for('static', filename='icon-descriptor-guided.png') }}" alt="" width="52" height="52" /></span>
+            <span class="title">Prediction Engine</span>
+            <span class="desc">Applies experimentally derived rules to predict the most likely encapsulation outcome.</span>
+          </div>
+          <div class="feature-card f4">
+            <span class="icon"><img src="{{ url_for('static', filename='icon-open-web.png') }}" alt="" width="52" height="52" /></span>
+            <span class="title">Instant Analysis</span>
+            <span class="desc">No installation required. Analyse protein structures directly in your browser.</span>
+          </div>
         </div>
-        <div>
-          <label class="field-label" for="chargeOverride">Net charge override</label>
-          <input class="text-input" id="chargeOverride" type="number" step="0.1" placeholder="e.g. from Prot pi" />
-        </div>
-        <div>
-          <label class="field-label" for="volumeOverride">SES volume override (Å³)</label>
-          <input class="text-input" id="volumeOverride" type="number" step="1" placeholder="e.g. from ChimeraX" />
+
+        <div class="info-columns">
+          <div class="includes-card">
+            <p class="title">Your analysis will include</p>
+            <div class="includes-card-body">
+              <ul class="includes-list">
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m5 13 4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>Overall compatibility assessment</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m5 13 4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>Predicted encapsulation outcome</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m5 13 4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>Size and shape analysis</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m5 13 4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>Surface charge analysis</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m5 13 4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>Mechanistic explanation</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m5 13 4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>Downloadable report</li>
+              </ul>
+              <img class="report-preview" src="{{ url_for('static', filename='report-preview.png') }}" alt="" aria-hidden="true" />
+            </div>
+          </div>
+
+          <a class="evidence-card" href="{{ url_for('about') }}">
+            <span class="icon">
+              <img src="{{ url_for('static', filename='evidence-icon.png') }}" alt="" width="44" height="44" />
+            </span>
+            <div class="content">
+              <p class="title">Built on experimental evidence</p>
+              <p>enCAGE uses transparent, descriptor-guided rules derived from systematic experimental studies of apoferritin encapsulation.</p>
+              <p class="emphasis">No black-box scoring. Just interpretable science you can trust.</p>
+            </div>
+          </a>
         </div>
       </div>
-      <p class="hint">
-        Volume is estimated with a fast grid-based approximation by default. For
-        manuscript-consistent numbers, supply a ChimeraX solvent-excluded volume
-        and/or a Prot pi net charge above.
-      </p>
-    </details>
 
-    <button class="btn-primary" id="analyzeBtn">Analyze</button>
-    <p class="error-msg hidden" id="errorMsg"></p>
-  </section>
+      <div class="loading hidden" id="loading">
+        <div class="spinner"></div>
+        <p>Analyzing structure…</p>
+      </div>
 
-  <section class="card result-card hidden" id="resultCard">
-    <div class="regime-badge" id="regimeBadge">
-      <span class="regime-roman" id="regimeRoman">I</span>
-      <span class="regime-text" id="regimeText">Efficient luminal encapsulation</span>
-    </div>
-    <h2 id="resultProtein">—</h2>
+      <div class="result-content" id="resultContent">
+        <div class="card">
+          <div class="card-header"><h2>Prediction</h2></div>
+          <div class="card-body">
+            <p class="section-label">Predicted regime</p>
+            <div class="regime-badge" id="regimeBadge">
+              <span class="regime-roman" id="regimeRoman">I</span>
+              <span class="regime-text" id="regimeText">Efficient luminal encapsulation</span>
+            </div>
+            <p class="regime-blurb" id="regimeBlurb"></p>
+            <h3 id="resultProtein">—</h3>
 
-    <div class="descriptor-grid" id="descriptorGrid"></div>
+            <p class="section-label">Key descriptors</p>
+            <div class="descriptor-table-wrap">
+              <table class="descriptor-table" id="descriptorTable">
+                <thead>
+                  <tr><th>Descriptor</th><th>Value</th><th>Cavity reference</th></tr>
+                </thead>
+                <tbody id="descriptorGrid"></tbody>
+              </table>
+            </div>
 
-    <div class="notes" id="notesBlock"></div>
+            <p class="section-label">Rationale &amp; notes</p>
+            <div class="notes" id="notesBlock"></div>
 
-    <div class="result-actions">
-      <button class="btn-secondary" id="downloadBtn">Download CSV</button>
-      <button class="btn-secondary" id="resetBtn">Analyze another</button>
-    </div>
-  </section>
+            <div class="result-actions">
+              <button class="btn-secondary" id="downloadBtn">Download CSV</button>
+              <button class="btn-secondary" id="resetBtn">Analyze another</button>
+            </div>
+          </div>
+        </div>
+      </div>
 
-  <div class="loading hidden" id="loading">
-    <div class="spinner"></div>
-    <p>Analyzing structure…</p>
+    </section>
+
   </div>
-
-  <section class="disclaimer">
-    <p>
-      enCAGE is a heuristic design aid, not a validated classifier. Regime
-      boundaries are calibrated on a small in-house cargo panel (equine
-      apoferritin, pH cycling) and should be refined as more data accrue.
-    </p>
-  </section>
 
 </main>
 
-<footer class="footer">
-  <p>enCAGE · Descriptor-guided framework for protein encapsulation in apoferritin nanocages</p>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <img class="logo-mark" src="{{ url_for('static', filename='logo.png') }}" alt="enCAGE logo" width="45" height="45" />
+      <div>
+        <p class="name"><span class="name-en">en</span><span class="name-cage">CAGE</span></p>
+        <p class="desc">Descriptor-guided framework for predicting protein encapsulation in apoferritin nanocages.</p>
+      </div>
+    </div>
+    <div class="footer-links">
+      <a href="https://carmali-lab.com/" target="_blank" rel="noopener">
+        <img src="https://carmali-lab.com/images/logo.png" alt="Carmali Lab logo" /> Carmali Lab
+      </a>
+      <a href="https://github.com/scarmali/encage_webapp" target="_blank" rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.58 2 12.19c0 4.5 2.87 8.31 6.84 9.66.5.1.68-.22.68-.49 0-.24-.01-.87-.01-1.71-2.78.62-3.37-1.37-3.37-1.37-.45-1.18-1.11-1.49-1.11-1.49-.91-.64.07-.63.07-.63 1 .07 1.53 1.05 1.53 1.05.89 1.57 2.34 1.11 2.91.85.09-.66.35-1.11.63-1.37-2.22-.26-4.56-1.14-4.56-5.06 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.31.1-2.73 0 0 .84-.28 2.75 1.05a9.3 9.3 0 0 1 5 0c1.9-1.33 2.75-1.05 2.75-1.05.55 1.42.2 2.47.1 2.73.64.72 1.03 1.63 1.03 2.75 0 3.93-2.34 4.79-4.57 5.05.36.32.68.94.68 1.9 0 1.37-.01 2.48-.01 2.81 0 .27.18.6.69.49A10.02 10.02 0 0 0 22 12.19C22 6.58 17.52 2 12 2Z"/></svg>
+        Source code
+      </a>
+      <a href="mailto:s.carmali@qub.ac.uk">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+        Contact
+      </a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 Carmali Lab, School of Pharmacy, Queen's University Belfast.</p>
+  </div>
 </footer>
 
 <script src="{{ url_for('static', filename='script.js') }}"></script>

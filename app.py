@@ -11,6 +11,8 @@ GET  /                  -> serves the frontend (templates/index.html) - only use
                            when this app serves the frontend itself (single-service
                            deployment). If you're hosting the frontend separately
                            on Cloudflare Pages, this route is simply unused.
+GET  /about             -> plain-language explainer for assembly regimes and
+                           descriptors (templates/about.html); same caveat as above.
 POST /api/analyze       -> multipart form: 'pdb_file' (upload) OR 'pdb_id'
                            (fetched live from RCSB), plus optional 'ph',
                            'cationic_threshold', 'net_charge', 'ses_volume_a3'
@@ -47,6 +49,11 @@ PDB_ID_RE = re.compile(r"^[A-Za-z0-9]{4}$")
 @app.route("/")
 def index():
     return render_template("index.html")
+
+
+@app.route("/about")
+def about():
+    return render_template("about.html")
 
 
 @app.route("/api/health")

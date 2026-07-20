@@ -1,17 +1,22 @@
 (function () {
-  const tabs = document.querySelectorAll(".tab");
+  const options = document.querySelectorAll(".input-option");
   const panelUpload = document.getElementById("panel-upload");
   const panelFetch = document.getElementById("panel-fetch");
+  const panelExample = document.getElementById("panel-example");
 
-  tabs.forEach((tab) => {
-    tab.addEventListener("click", () => {
-      tabs.forEach((t) => { t.classList.remove("active"); t.setAttribute("aria-selected", "false"); });
-      tab.classList.add("active");
-      tab.setAttribute("aria-selected", "true");
-      const which = tab.dataset.tab;
-      panelUpload.classList.toggle("hidden", which !== "upload");
-      panelFetch.classList.toggle("hidden", which !== "fetch");
+  function selectOption(which) {
+    options.forEach((o) => {
+      const active = o.dataset.option === which;
+      o.classList.toggle("active", active);
+      o.setAttribute("aria-selected", active ? "true" : "false");
     });
+    panelUpload.classList.toggle("hidden", which !== "upload");
+    panelFetch.classList.toggle("hidden", which !== "fetch");
+    panelExample.classList.toggle("hidden", which !== "example");
+  }
+
+  options.forEach((option) => {
+    option.addEventListener("click", () => selectOption(option.dataset.option));
   });
 
   const dropzone = document.getElementById("dropzone");
@@ -54,9 +59,18 @@
   const regimeBadge = document.getElementById("regimeBadge");
   const regimeRoman = document.getElementById("regimeRoman");
   const regimeText = document.getElementById("regimeText");
+  const regimeBlurb = document.getElementById("regimeBlurb");
   const resultProtein = document.getElementById("resultProtein");
   const descriptorGrid = document.getElementById("descriptorGrid");
   const notesBlock = document.getElementById("notesBlock");
+
+  const API_BASE = window.ENCAGE_API_BASE || "";
+
+  const REGIME_BLURBS = {
+    I: "Compact and charge-matched — this cargo should load cleanly into the ferritin cavity.",
+    II: "Bigger than the nominal cavity, but flexible multidomain proteins can still pack in. Worth testing, not guaranteed.",
+    III: "Strongly cationic surface — this tends to clump with the cage instead of loading cleanly inside it.",
+  };
 
   let lastResult = null;
 
@@ -81,23 +95,24 @@
     regimeBadge.className = `regime-badge ${regimeClass}`;
     regimeRoman.textContent = data.regime_number;
     regimeText.textContent = data.regime_label;
+    regimeBlurb.textContent = REGIME_BLURBS[data.regime_number] || "";
     resultProtein.textContent = data.protein;
 
     const items = [
-      ["Dmax", fmt(data.dmax_nm, "nm"), null],
-      ["Length × Width × Thickness", `${fmt(data.length_nm)} × ${fmt(data.width_nm)} × ${fmt(data.thickness_nm)} nm`, null],
-      ["Volume ratio (vs 268 nm³ cavity)", fmt(data.volume_ratio), data.volume_source],
-      ["SES / grid volume", fmt(data.volume_nm3, "nm³"), data.volume_source],
-      ["Net charge (pH " + fmt(data.ph) + ")", fmt(data.net_charge), data.charge_source],
-      ["Relative shape anisotropy (κ²)", fmt(data.kappa2), null],
+      ["Dmax", fmt(data.dmax_nm, "nm"), "~8.0 nm cavity diameter", null],
+      ["Length × width × thickness", `${fmt(data.length_nm)} × ${fmt(data.width_nm)} × ${fmt(data.thickness_nm)} nm`, "—", null],
+      ["Volume ratio", fmt(data.volume_ratio), "1.00 = full cavity", data.volume_source],
+      ["Molecular volume", fmt(data.volume_nm3, "nm³"), "268 nm³ cavity", data.volume_source],
+      ["Net charge (pH " + fmt(data.ph) + ")", fmt(data.net_charge), `cationic threshold ${fmt(data.cationic_threshold)}`, data.charge_source],
+      ["Shape anisotropy (κ²)", fmt(data.kappa2), "0 = sphere, 1 = rod", null],
     ];
 
-    descriptorGrid.innerHTML = items.map(([label, value, source]) => `
-      <div class="descriptor-item">
-        <span class="label">${label}</span>
-        <span class="value">${value}</span>
-        ${source ? `<span class="source">${source}</span>` : ""}
-      </div>
+    descriptorGrid.innerHTML = items.map(([label, value, ref, source]) => `
+      <tr>
+        <td data-label="Descriptor">${label}</td>
+        <td class="value" data-label="Value">${value}${source ? `<span class="source">${source}</span>` : ""}</td>
+        <td class="ref" data-label="Cavity reference">${ref}</td>
+      </tr>
     `).join("");
 
     if (data.notes && data.notes.length) {
@@ -106,23 +121,27 @@
       notesBlock.innerHTML = `<p class="notes-empty">No caveats flagged for this call.</p>`;
     }
 
-    inputCard.classList.add("hidden");
-    resultCard.classList.remove("hidden");
+    resultCard.classList.remove("is-empty");
     resultCard.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
-  analyzeBtn.addEventListener("click", async () => {
+  async function runAnalysis(pdbIdOverride) {
     clearError();
-    const activeTab = document.querySelector(".tab.active").dataset.tab;
+    const activeOption = document.querySelector(".input-option.active").dataset.option;
 
     const form = new FormData();
-    if (activeTab === "upload") {
+    if (pdbIdOverride) {
+      form.append("pdb_id", pdbIdOverride);
+    } else if (activeOption === "upload") {
       if (!selectedFile) { showError("Please choose a .pdb file first."); return; }
       form.append("pdb_file", selectedFile);
-    } else {
+    } else if (activeOption === "fetch") {
       const id = pdbIdInput.value.trim();
       if (!/^[A-Za-z0-9]{4}$/.test(id)) { showError("Enter a valid 4-character PDB ID, e.g. 4CHA."); return; }
       form.append("pdb_id", id);
+    } else {
+      showError("Select an example protein above, or switch to Upload / Enter PDB ID.");
+      return;
     }
     if (phInput.value) form.append("ph", phInput.value);
     if (cationicInput.value) form.append("cationic_threshold", cationicInput.value);
@@ -133,7 +152,7 @@
     loading.classList.remove("hidden");
 
     try {
-      const res = await fetch("/api/analyze", { method: "POST", body: form });
+      const res = await fetch(`${API_BASE}/api/analyze`, { method: "POST", body: form });
       const data = await res.json();
       if (!res.ok) {
         showError(data.error || "Something went wrong.");
@@ -146,15 +165,34 @@
       analyzeBtn.disabled = false;
       loading.classList.add("hidden");
     }
+  }
+
+  analyzeBtn.addEventListener("click", () => runAnalysis());
+
+  document.querySelectorAll(".example-item").forEach((item) => {
+    item.addEventListener("click", () => {
+      selectOption("fetch");
+      pdbIdInput.value = item.dataset.pdb;
+      runAnalysis(item.dataset.pdb);
+    });
   });
 
+  const tryExampleLink = document.getElementById("tryExampleLink");
+  if (tryExampleLink) {
+    tryExampleLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      selectOption("example");
+      inputCard.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
+
   document.getElementById("resetBtn").addEventListener("click", () => {
-    resultCard.classList.add("hidden");
-    inputCard.classList.remove("hidden");
+    resultCard.classList.add("is-empty");
     selectedFile = null;
     fileInput.value = "";
     fileNameEl.textContent = "";
     pdbIdInput.value = "";
+    selectOption("upload");
     clearError();
     inputCard.scrollIntoView({ behavior: "smooth", block: "start" });
   });
