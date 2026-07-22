@@ -15,7 +15,9 @@ GET  /about             -> plain-language explainer for assembly regimes and
                            descriptors (templates/about.html); same caveat as above.
 POST /api/analyze       -> multipart form: 'pdb_file' (upload) OR 'pdb_id'
                            (fetched live from RCSB), plus optional 'ph',
-                           'cationic_threshold', 'net_charge', 'ses_volume_a3'
+                           'cationic_threshold', 'net_charge', 'ses_volume_a3',
+                           'multidomain' ('true'/'false'; omit/blank -> unresolved
+                           for oversized cargo, see encage_core.classify_regime)
 GET  /api/health        -> simple healthcheck for deployment platforms
 
 CORS
@@ -46,6 +48,20 @@ RCSB_URL = "https://files.rcsb.org/download/{id}.pdb"
 PDB_ID_RE = re.compile(r"^[A-Za-z0-9]{4}$")
 
 
+def _parse_tristate_bool(value):
+    """'true'/'false' (case-insensitive) -> True/False; anything else (incl.
+    missing/blank) -> None, meaning 'unresolved' - matches encage_core's
+    multidomain semantics, so we never silently guess."""
+    if value is None:
+        return None
+    value = value.strip().lower()
+    if value == "true":
+        return True
+    if value == "false":
+        return False
+    return None
+
+
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -72,6 +88,7 @@ def api_analyze():
         cationic_threshold = request.form.get("cationic_threshold", type=float)
         net_charge_override = request.form.get("net_charge", type=float)
         volume_override = request.form.get("ses_volume_a3", type=float)
+        multidomain = _parse_tristate_bool(request.form.get("multidomain"))
 
         overrides = {}
         if net_charge_override is not None:
@@ -106,6 +123,7 @@ def api_analyze():
             pH=ph,
             cationic_threshold=cationic_threshold,
             overrides=overrides,
+            multidomain=multidomain,
         )
         return jsonify(result)
 

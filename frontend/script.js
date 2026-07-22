@@ -49,6 +49,7 @@
   const cationicInput = document.getElementById("cationicInput");
   const chargeOverride = document.getElementById("chargeOverride");
   const volumeOverride = document.getElementById("volumeOverride");
+  const multidomainInput = document.getElementById("multidomainInput");
 
   const analyzeBtn = document.getElementById("analyzeBtn");
   const errorMsg = document.getElementById("errorMsg");
@@ -70,6 +71,17 @@
     I: "Compact and charge-matched — this cargo should load cleanly into the ferritin cavity.",
     II: "Bigger than the nominal cavity, but flexible multidomain proteins can still pack in. Worth testing, not guaranteed.",
     III: "Strongly cationic surface — this tends to clump with the cage instead of loading cleanly inside it.",
+    IV: "Bigger than the nominal cavity and single-domain/rigid — adaptive packing isn't expected, so encapsulation is not predicted.",
+  };
+  const UNRESOLVED_BLURB =
+    "Bigger than the nominal cavity — whether it loads depends on multidomain flexibility. " +
+    "Set “Multidomain / flexible?” above and re-run to resolve.";
+
+  const REGIME_META = {
+    I: { cls: "regime-1", roman: "I" },
+    II: { cls: "regime-2", roman: "II" },
+    III: { cls: "regime-3", roman: "III" },
+    IV: { cls: "regime-4", roman: "IV" },
   };
 
   let lastResult = null;
@@ -91,11 +103,11 @@
   function renderResult(data) {
     lastResult = data;
 
-    const regimeClass = { I: "regime-1", II: "regime-2", III: "regime-3" }[data.regime_number] || "regime-1";
-    regimeBadge.className = `regime-badge ${regimeClass}`;
-    regimeRoman.textContent = data.regime_number;
+    const meta = REGIME_META[data.regime_number] || { cls: "regime-unresolved", roman: "?" };
+    regimeBadge.className = `regime-badge ${meta.cls}`;
+    regimeRoman.textContent = meta.roman;
     regimeText.textContent = data.regime_label;
-    regimeBlurb.textContent = REGIME_BLURBS[data.regime_number] || "";
+    regimeBlurb.textContent = REGIME_BLURBS[data.regime_number] || UNRESOLVED_BLURB;
     resultProtein.textContent = data.protein;
 
     const items = [
@@ -106,6 +118,10 @@
       ["Net charge (pH " + fmt(data.ph) + ")", fmt(data.net_charge), `cationic threshold ${fmt(data.cationic_threshold)}`, data.charge_source],
       ["Shape anisotropy (κ²)", fmt(data.kappa2), "0 = sphere, 1 = rod", null],
     ];
+    if (data.dmax_nm > 8.0) {
+      const mdLabel = data.multidomain === true ? "Yes" : data.multidomain === false ? "No" : "Not specified";
+      items.push(["Multidomain / flexible", mdLabel, "consulted only when oversized", null]);
+    }
 
     descriptorGrid.innerHTML = items.map(([label, value, ref, source]) => `
       <tr>
@@ -147,6 +163,7 @@
     if (cationicInput.value) form.append("cationic_threshold", cationicInput.value);
     if (chargeOverride.value) form.append("net_charge", chargeOverride.value);
     if (volumeOverride.value) form.append("ses_volume_a3", volumeOverride.value);
+    if (multidomainInput.value) form.append("multidomain", multidomainInput.value);
 
     analyzeBtn.disabled = true;
     loading.classList.remove("hidden");
@@ -173,6 +190,7 @@
     item.addEventListener("click", () => {
       selectOption("fetch");
       pdbIdInput.value = item.dataset.pdb;
+      multidomainInput.value = item.dataset.multidomain || "";
       runAnalysis(item.dataset.pdb);
     });
   });
@@ -192,6 +210,7 @@
     fileInput.value = "";
     fileNameEl.textContent = "";
     pdbIdInput.value = "";
+    multidomainInput.value = "";
     selectOption("upload");
     clearError();
     inputCard.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -212,6 +231,7 @@
       [`Net charge (pH ${d.ph})`, d.net_charge],
       ["Charge source", d.charge_source],
       ["Relative shape anisotropy", d.kappa2],
+      ["Multidomain flag", d.multidomain === null || d.multidomain === undefined ? "not specified" : d.multidomain],
       ["Predicted regime", `${d.regime_number} (${d.regime_label})`],
       ["Notes", (d.notes || []).join("; ")],
     ];

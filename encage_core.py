@@ -22,10 +22,6 @@ a Prot pi net charge) for their protein can supply either/both as overrides
 and they will be used verbatim.
 """
 
-import io
-import os
-import tempfile
-
 import numpy as np
 from scipy.spatial import distance, cKDTree
 from Bio.PDB import PDBParser
@@ -68,11 +64,22 @@ class AnalysisError(Exception):
 # --------------------------------------------------------------------------- #
 # Geometry
 # --------------------------------------------------------------------------- #
-def load_structure_from_path(pdb_path):
+def load_structure_from_path(pdb_path, chains=None):
+    """Parse a PDB file into heavy-atom coordinates.
+
+    chains: optional iterable of chain IDs to restrict to (default: all chains).
+    HETATM records (ligands, waters, ions) are always excluded.
+    """
     structure = parser.get_structure("protein", pdb_path)
+    chain_set = set(chains) if chains is not None else None
     coords, elements = [], []
     for atom in structure.get_atoms():
         if atom.element == "H":
+            continue
+        residue = atom.get_parent()
+        if residue.id[0] != " ":
+            continue
+        if chain_set is not None and residue.get_parent().id not in chain_set:
             continue
         coords.append(atom.coord)
         elements.append(atom.element)
@@ -167,14 +174,22 @@ def grid_vdw_volume(coords, elements, spacing=0.9, max_atoms=8000):
         pts = np.column_stack([XY, np.full(len(XY), z)])
         d, idx2 = tree.query(pts, k=1)
         occ += np.count_nonzero(d <= radii[idx2])
-    scale = (len(coords) / max(len(coords), 1))  # no-op, kept for clarity
     return occ * spacing ** 3
 
 
 # --------------------------------------------------------------------------- #
 # Regime decision (identical logic/thresholds to ferritin_regime_predictor.py)
 # --------------------------------------------------------------------------- #
-def classify_regime(q, dmax_nm, vol_ratio, cfg):
+def classify_regime(q, dmax_nm, vol_ratio, cfg, multidomain=None):
+    """Electrostatics -> sterics -> structural-organisation regime call.
+
+    multidomain: only consulted for oversized cargo (Dmax > cavity) that has
+    already passed the electrostatic check. None means "not yet resolved" and
+    is reported as such rather than silently treated as Regime II.
+        True  -> Regime II (accommodation)
+        False -> "Predicted: no encapsulation" (oversized + single-domain/rigid)
+        None  -> unresolved; caller must supply multidomain=True/False
+    """
     notes = []
     if not np.isnan(q) and q >= cfg["cationic_threshold"]:
         notes.append("Strongly cationic surface favours charge-driven off-pathway assembly.")
@@ -193,20 +208,37 @@ def classify_regime(q, dmax_nm, vol_ratio, cfg):
                 % vol_ratio
             )
         return "I", "Efficient luminal encapsulation", notes
+
     notes.append(
         "Dmax exceeds the ~8 nm cavity: encapsulation depends on multidomain flexibility / "
         "adaptive packing, which cannot be judged from a single static structure."
     )
-    return "II", "Accommodation possible - structural-organisation dependent", notes
+    if multidomain is True:
+        return "II", "Accommodation possible - structural-organisation dependent", notes
+    if multidomain is False:
+        notes.append(
+            "Oversized cargo with single-domain/rigid architecture: adaptive packing is not "
+            "expected, so encapsulation is not predicted."
+        )
+        return "IV", "Predicted: no encapsulation", notes
+    notes.append(
+        "oversized cargo; specify multidomain=True/False to resolve - Regime II if "
+        "multidomain/flexible, predicted non-encapsulation if single-domain rigid."
+    )
+    return "II/IV (unresolved)", "Unresolved - multidomain flag required", notes
 
 
 # --------------------------------------------------------------------------- #
 # Public entry point
 # --------------------------------------------------------------------------- #
-def analyze_pdb(pdb_path, stem, pH=None, cationic_threshold=None, overrides=None):
+def analyze_pdb(pdb_path, stem, pH=None, cationic_threshold=None, overrides=None,
+                 multidomain=None, chains=None):
     """Run the full descriptor + regime pipeline on one PDB file.
 
     overrides: optional dict with any of 'net_charge', 'ses_volume_A3' (floats).
+    multidomain: user-supplied per-cargo flag (True/False/None) consulted only
+        for oversized cargo; see classify_regime. Not auto-detected.
+    chains: optional iterable of chain IDs to restrict the structure to.
     Returns a plain dict, JSON-serialisable.
     """
     overrides = overrides or {}
@@ -216,7 +248,7 @@ def analyze_pdb(pdb_path, stem, pH=None, cationic_threshold=None, overrides=None
     if cationic_threshold is not None:
         cfg["cationic_threshold"] = cationic_threshold
 
-    structure, coords, elements = load_structure_from_path(pdb_path)
+    structure, coords, elements = load_structure_from_path(pdb_path, chains=chains)
     dims, centered, eigvals = principal_dimensions(coords)
     L, W, T = dims
     dmax_A = maximum_dimension(coords)
@@ -242,7 +274,7 @@ def analyze_pdb(pdb_path, stem, pH=None, cationic_threshold=None, overrides=None
     vol_nm3 = vol_A3 / 1000.0 if vol_A3 == vol_A3 else float("nan")
     vol_ratio = vol_nm3 / CAVITY_VOLUME_NM3 if vol_nm3 == vol_nm3 else float("nan")
 
-    regime_num, regime_label, notes = classify_regime(q, dmax_nm, vol_ratio, cfg)
+    regime_num, regime_label, notes = classify_regime(q, dmax_nm, vol_ratio, cfg, multidomain=multidomain)
 
     if unknown_residues:
         notes.append(
@@ -263,6 +295,7 @@ def analyze_pdb(pdb_path, stem, pH=None, cationic_threshold=None, overrides=None
         ph=cfg["pH"],
         cationic_threshold=cfg["cationic_threshold"],
         kappa2=round(kappa2, 3),
+        multidomain=multidomain,
         regime_number=regime_num,
         regime_label=regime_label,
         notes=notes,

@@ -1,15 +1,37 @@
 # enCAGE web app
 
 A mobile-friendly web interface for **enCAGE** (Cargo Assessment for Guided
-Encapsulation) — predicts the likely ferritin-nanocage encapsulation regime
-(I: efficient luminal encapsulation, II: structural-organisation-dependent
-accommodation, III: charge-driven off-pathway assembly) for a protein cargo
-from its PDB structure, following the descriptor-guided framework described
-in the accompanying manuscript.
+Encapsulation) — predicts the likely ferritin-nanocage encapsulation outcome
+for a protein cargo from its PDB structure, following the descriptor-guided
+framework described in the accompanying manuscript:
+
+- **Regime I** — efficient luminal encapsulation (cargo fits within the ~8 nm
+  cavity)
+- **Regime II** — structural-organisation-dependent accommodation (oversized
+  cargo, but multidomain/flexible)
+- **Regime III** — charge-driven off-pathway assembly (strongly cationic
+  surface)
+- **Predicted: no encapsulation** — oversized cargo with a single-domain/rigid
+  architecture, so adaptive packing into the cavity is not expected
 
 It wraps the same descriptor logic as `ferritin_regime_predictor.py`
 (net charge at pH 7.4, Dmax, cavity volume ratio), refactored into
 `encage_core.py` so it can run behind a web API instead of the command line.
+
+### The `multidomain` flag
+
+Electrostatics is checked first (Regime III), then size against the ~8 nm
+cavity (Regime I if it fits). For cargo that clears the electrostatic check
+but is **oversized**, the call depends on whether the cargo is multidomain /
+conformationally flexible — something that can't be determined from a single
+static structure, so it's a user-supplied flag rather than something enCAGE
+infers automatically:
+
+| `multidomain` | Outcome |
+|---|---|
+| `True` | Regime II (accommodation) |
+| `False` | Predicted: no encapsulation (oversized, single-domain/rigid) |
+| `None` (default) | Unresolved — flagged with guidance to specify `True`/`False` rather than silently defaulting to Regime II |
 
 ## What's different from the original script
 
@@ -131,6 +153,17 @@ webapp/
     ├── script.js
     └── config.js           # <- set window.ENCAGE_API_BASE to your Render URL here
 ```
+
+## Citation
+
+If you use enCAGE, please cite:
+
+> [Author list]. enCAGE: Cargo Assessment for Guided Encapsulation.
+> Zenodo. https://doi.org/XX.XXXX/zenodo.XXXXXXX
+
+<!-- TODO: replace with the Zenodo concept DOI once the GitHub release has
+     been archived (see repo root for release/archiving steps). The concept
+     DOI always resolves to the latest version. -->
 
 ## Notes / limitations
 
