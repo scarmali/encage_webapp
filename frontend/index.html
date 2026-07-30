@@ -50,12 +50,37 @@
     </p>
     <p class="hero-pill">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 2v6L4 19a2 2 0 0 0 1.8 3h12.4A2 2 0 0 0 20 19l-5-11V2"/><path d="M9 2h6"/><circle cx="12" cy="16" r="1.2" fill="currentColor" stroke="none"/><circle cx="9.3" cy="18.4" r="0.9" fill="currentColor" stroke="none"/></svg>
-      Built on <strong>experimental evidence</strong>, not black-box models.
+      Built on <strong>experimental evidence</strong>.
     </p>
   </div>
 </section>
 
 <main class="wrap">
+
+  <section class="how-it-works">
+    <h2>How enCAGE works</h2>
+    <p class="how-it-works-sub">Three key descriptors drive our prediction of encapsulation outcome.</p>
+    <div class="steps-row">
+      <div class="step-card step-blue">
+        <span class="icon"><img src="icon-structure-aware.png" alt="" width="40" height="40" /></span>
+        <p class="step-title">1. Size &amp; Shape</p>
+        <p class="step-desc">We assess the protein's dimensions and shape to determine if it can physically fit inside the ferritin cavity.</p>
+      </div>
+      <span class="step-arrow" aria-hidden="true">›</span>
+      <div class="step-card step-green">
+        <span class="icon"><img src="icon-charge-informed.png" alt="" width="40" height="40" /></span>
+        <p class="step-title">2. Surface Charge</p>
+        <p class="step-desc">We evaluate electrostatic compatibility between the protein surface and the negatively charged ferritin interior.</p>
+      </div>
+      <span class="step-arrow" aria-hidden="true">›</span>
+      <div class="step-card step-orange">
+        <span class="icon"><img src="icon-descriptor-guided.png" alt="" width="40" height="40" /></span>
+        <p class="step-title">3. Prediction Engine</p>
+        <p class="step-desc">Our descriptor-guided rules integrate size and charge to predict the most likely encapsulation outcome.</p>
+      </div>
+    </div>
+    <a class="methodology-link" href="about.html">Learn more about our methodology</a>
+  </section>
 
   <section class="card tool-card" id="inputCard">
     <div class="tool-card-header">
@@ -96,9 +121,9 @@
         </p>
         <select class="text-input" id="exampleSelect">
           <option value="">Choose an example</option>
-          <option value="4CHA">α-Chymotrypsin — Regime I</option>
-          <option value="1AO6" data-multidomain="true">Human serum albumin — Regime II</option>
-          <option value="1LYZ">Lysozyme — Regime III</option>
+          <option value="4CHA">α-Chymotrypsin</option>
+          <option value="1AO6" data-multidomain="true">Human serum albumin</option>
+          <option value="1LYZ">Lysozyme</option>
         </select>
         <p class="tool-col-hint">Explore known outcomes</p>
       </div>
@@ -169,50 +194,6 @@
       <p>Analyzing structure…</p>
     </div>
   </div>
-
-  <div class="trust-bar">
-    <div class="trust-item">
-      <span class="trust-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="7" r="2"/><circle cx="18" cy="7" r="2"/><circle cx="12" cy="18" r="2"/><path d="M7.6 8.3 10.4 16.5M16.4 8.3 13.6 16.5M8 7h8"/></svg></span>
-      <div><p class="trust-title">No installation</p><p class="trust-sub">Nothing to download</p></div>
-    </div>
-    <div class="trust-item">
-      <span class="trust-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 2v6L4 19a2 2 0 0 0 1.8 3h12.4A2 2 0 0 0 20 19l-5-11V2"/><path d="M9 2h6"/><circle cx="12" cy="16" r="1.2" fill="currentColor" stroke="none"/><circle cx="9.3" cy="18.4" r="0.9" fill="currentColor" stroke="none"/></svg></span>
-      <div><p class="trust-title">Experimental rules</p><p class="trust-sub">Transparent &amp; interpretable</p></div>
-    </div>
-    <div class="trust-item">
-      <span class="trust-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M4 5v14l8-7Z"/><path d="M13 5v14l8-7Z"/></svg></span>
-      <div><p class="trust-title">Fast results</p><p class="trust-sub">Analysis in seconds</p></div>
-    </div>
-    <div class="trust-item">
-      <span class="trust-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3 5 7v10l7 4 7-4V7Z"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/></svg></span>
-      <div><p class="trust-title">Privacy protected</p><p class="trust-sub">Nothing stored</p></div>
-    </div>
-  </div>
-
-  <section class="how-it-works">
-    <h2>How enCAGE works</h2>
-    <p class="how-it-works-sub">Three key descriptors drive our prediction of encapsulation outcome.</p>
-    <div class="steps-row">
-      <div class="step-card step-blue">
-        <span class="icon"><img src="icon-structure-aware.png" alt="" width="40" height="40" /></span>
-        <p class="step-title">1. Size &amp; Shape</p>
-        <p class="step-desc">We assess the protein's dimensions and shape to determine if it can physically fit inside the ferritin cavity.</p>
-      </div>
-      <span class="step-arrow" aria-hidden="true">›</span>
-      <div class="step-card step-green">
-        <span class="icon"><img src="icon-charge-informed.png" alt="" width="40" height="40" /></span>
-        <p class="step-title">2. Surface Charge</p>
-        <p class="step-desc">We evaluate electrostatic compatibility between the protein surface and the negatively charged ferritin interior.</p>
-      </div>
-      <span class="step-arrow" aria-hidden="true">›</span>
-      <div class="step-card step-orange">
-        <span class="icon"><img src="icon-descriptor-guided.png" alt="" width="40" height="40" /></span>
-        <p class="step-title">3. Prediction Engine</p>
-        <p class="step-desc">Our descriptor-guided rules integrate size and charge to predict the most likely encapsulation outcome.</p>
-      </div>
-    </div>
-    <a class="methodology-link" href="about.html">Learn more about our methodology</a>
-  </section>
 
   <section class="result-section hidden" id="resultCard">
     <div class="result-content" id="resultContent">
