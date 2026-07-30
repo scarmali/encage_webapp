@@ -879,6 +879,13 @@ table.descriptor-table td.ref { color: var(--ink-soft); }
   line-height: 1.5;
   margin: 0;
 }
+/* deployed encage_core version - deliberately understated */
+.footer-version {
+  margin-top: 4px !important;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.75;
+}
+.footer-version[hidden] { display: none; }
 
 /* ---- about / article page ---- */
 .article {

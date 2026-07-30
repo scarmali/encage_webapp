@@ -8,3 +8,7 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.9
+      # Restrict /api/* to the deployed frontend. Scheme + host, no trailing
+      # slash, and it must match the browser's Origin header exactly.
+      - key: ALLOWED_ORIGIN
+        value: https://encage.app

@@ -1,5 +1,7 @@
 # enCAGE web app
 
+Live at **[encage.app](https://encage.app)**.
+
 A mobile-friendly web interface for **enCAGE** (Cargo Assessment for Guided
 Encapsulation) — predicts the likely ferritin-nanocage encapsulation outcome
 for a protein cargo from its PDB structure, following the descriptor-guided
@@ -17,6 +19,34 @@ framework described in the accompanying manuscript:
 It wraps the same descriptor logic as `ferritin_regime_predictor.py`
 (net charge at pH 7.4, Dmax, cavity volume ratio), refactored into
 `encage_core.py` so it can run behind a web API instead of the command line.
+
+`encage_core.py` is maintained in its own repository —
+[github.com/scarmali/encage](https://github.com/scarmali/encage) — which is the
+citable, archived version and the one to use if you want the library rather than
+the interface. The copy vendored here is kept in sync with it; make changes to the
+science upstream, not in this repo.
+
+### Keeping the vendored copy in sync
+
+`encage_core.py` carries a `__version__` string. The API reports it at
+`/api/health`, and the About page footer shows it, so the deployed version is
+always checkable without diffing files:
+
+```bash
+curl https://api.encage.app/api/health
+# {"encage_core_version": "0.1.0", "status": "ok"}
+```
+
+To pull in an upstream change:
+
+1. In the upstream repo, bump `__version__` — minor/major if a prediction could
+   change for the same input, patch otherwise — and tag a release.
+2. Copy the new `encage_core.py` over the one here, commit, push. Render
+   redeploys automatically.
+3. Hit `/api/health` and confirm the version matches the upstream tag.
+
+If the footer version lags behind the upstream release, the vendored copy is
+stale.
 
 ### The `multidomain` flag
 
@@ -117,17 +147,24 @@ the frontend):
 2. Set **Root Directory** to `webapp` (Render will pick up `render.yaml` from
    there — build `pip install -r requirements.txt`, start `gunicorn app:app`).
 3. Deploy. Copy the resulting URL, e.g. `https://encage-api.onrender.com`.
-4. (Recommended) In Render's environment variables, add
-   `ALLOWED_ORIGIN = https://<your-project>.pages.dev` once you know your
-   Pages URL, so only your frontend can call the API. It defaults to `*`
-   (any origin) if you skip this.
+4. Under the service's **Settings → Custom Domains**, add `api.encage.app`, then
+   create the CNAME record Render shows you at your DNS provider. Render issues
+   the TLS certificate automatically once the record resolves.
+5. `render.yaml` already sets `ALLOWED_ORIGIN = https://encage.app`, so only the
+   deployed frontend can call `/api/*`. If you serve the frontend from somewhere
+   else, change it there (or override it in Render's environment variables) —
+   it must match the browser's `Origin` header exactly: scheme + host, no
+   trailing slash. Unset, it falls back to `*` (any origin).
 
 **3. Point the frontend at that backend:**
-Edit `webapp/frontend/config.js`:
+`webapp/frontend/config.js` is already set to the production backend:
 ```js
-window.ENCAGE_API_BASE = "https://encage-api.onrender.com";
+window.ENCAGE_API_BASE = "https://api.encage.app";
 ```
-Commit and push that change.
+Using the subdomain rather than the raw `.onrender.com` URL means you can move
+the backend later by changing a DNS record instead of shipping a code change.
+If you'd rather skip the subdomain, put the `.onrender.com` URL here instead
+and set `ALLOWED_ORIGIN` to match your frontend's origin.
 
 **4. Deploy the frontend on Cloudflare Pages:**
 1. [dash.cloudflare.com](https://dash.cloudflare.com) → **Workers & Pages** →
@@ -136,12 +173,25 @@ Commit and push that change.
    (leave empty — there's nothing to build), **Build output directory** =
    `webapp/frontend`.
 3. Deploy. You get a public `https://<your-project>.pages.dev` URL.
-4. Optional: attach a custom domain under the Pages project's "Custom
-   domains" tab.
+4. Under the Pages project's **Custom domains** tab, add `encage.app` (and
+   `www.encage.app` if you want it to redirect). If the domain's nameservers
+   are already on Cloudflare, the DNS records are created for you.
 
-That's it — the Pages URL is what you share; it calls the Render URL behind
-the scenes. If you rename the Render service later, just update
-`frontend/config.js` and push again (Pages redeploys automatically on push).
+That's it — `https://encage.app` is what you share; it calls `api.encage.app`
+behind the scenes. If you move the backend later, repoint the `api` CNAME
+rather than editing `config.js`.
+
+### A note on `.app` and HTTPS
+
+`.app` is on the HSTS preload list, so browsers refuse to load either host over
+plain HTTP — there is no insecure fallback to debug against. Two consequences:
+
+- Both the Pages site and the Render API must be HTTPS. Both are by default,
+  so this is normally invisible.
+- A page loaded from `https://encage.app` can never call `http://localhost:5000`.
+  For local work, run the frontend locally too (`python app.py`, or any static
+  server over the `frontend/` folder) and point `ENCAGE_API_BASE` at localhost —
+  just don't commit that change.
 
 ## File structure
 

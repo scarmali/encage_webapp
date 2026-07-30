@@ -22,10 +22,15 @@ GET  /api/health        -> simple healthcheck for deployment platforms
 
 CORS
 ----
-When the frontend is hosted on a different domain (e.g. Cloudflare Pages) than
-this API (e.g. Render), the browser enforces CORS. Set the ALLOWED_ORIGIN
-environment variable to your Pages URL (e.g. https://encage.pages.dev) in
-production; it defaults to "*" (any origin) which is fine for getting started.
+When the frontend is hosted on a different domain (Cloudflare Pages, served at
+https://encage.app) than this API (Render, served at https://api.encage.app),
+the browser enforces CORS. Set the ALLOWED_ORIGIN environment variable to the
+frontend's origin - scheme + host, no trailing slash, matching the browser's
+Origin header exactly. render.yaml sets it to https://encage.app; it falls back
+to "*" (any origin) when unset, which is fine for local development.
+
+Note that .app is an HSTS-preloaded TLD: browsers will not load either host over
+plain HTTP, so both frontend and API must be HTTPS in production.
 """
 
 import os
@@ -36,7 +41,7 @@ import requests
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 
-from encage_core import analyze_pdb, AnalysisError
+from encage_core import analyze_pdb, AnalysisError, __version__ as ENCAGE_VERSION
 
 app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = 20 * 1024 * 1024  # 20 MB upload cap
@@ -74,7 +79,12 @@ def about():
 
 @app.route("/api/health")
 def health():
-    return jsonify(status="ok")
+    """Healthcheck, and the canonical answer to "which encage_core is deployed?"
+
+    encage_core.py is vendored into this repo from github.com/scarmali/encage,
+    so reporting its version here makes a stale copy detectable without diffing.
+    """
+    return jsonify(status="ok", encage_core_version=ENCAGE_VERSION)
 
 
 @app.route("/api/analyze", methods=["POST"])

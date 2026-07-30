@@ -26,6 +26,17 @@ import numpy as np
 from scipy.spatial import distance, cKDTree
 from Bio.PDB import PDBParser
 
+# Bump on every release of the upstream repo (github.com/scarmali/encage), then
+# re-copy this file into the web app repo. The web app reports this string at
+# /api/health and in its About page footer, so a stale vendored copy is visible
+# rather than silent. Semantic versioning: bump the minor/major component if a
+# prediction could change for the same input, the patch component otherwise.
+#
+# 1.0.0 is reserved for the release cited in the manuscript. Pre-publication
+# releases stay on 0.x, where the 0 major signals that thresholds and outputs
+# may still change.
+__version__ = "0.1.0"
+
 parser = PDBParser(QUIET=True)
 
 # --------------------------------------------------------------------------- #
