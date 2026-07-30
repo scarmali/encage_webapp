@@ -29,7 +29,7 @@
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9h13v-9"/></svg>
         <span class="label">Analyze a protein</span>
       </a>
-      <a class="toolbar-link" href="https://github.com/scarmali/encage_webapp" target="_blank" rel="noopener">
+      <a class="toolbar-link" href="https://github.com/scarmali/encage" target="_blank" rel="noopener">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.58 2 12.19c0 4.5 2.87 8.31 6.84 9.66.5.1.68-.22.68-.49 0-.24-.01-.87-.01-1.71-2.78.62-3.37-1.37-3.37-1.37-.45-1.18-1.11-1.49-1.11-1.49-.91-.64.07-.63.07-.63 1 .07 1.53 1.05 1.53 1.05.89 1.57 2.34 1.11 2.91.85.09-.66.35-1.11.63-1.37-2.22-.26-4.56-1.14-4.56-5.06 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.31.1-2.73 0 0 .84-.28 2.75 1.05a9.3 9.3 0 0 1 5 0c1.9-1.33 2.75-1.05 2.75-1.05.55 1.42.2 2.47.1 2.73.64.72 1.03 1.63 1.03 2.75 0 3.93-2.34 4.79-4.57 5.05.36.32.68.94.68 1.9 0 1.37-.01 2.48-.01 2.81 0 .27.18.6.69.49A10.02 10.02 0 0 0 22 12.19C22 6.58 17.52 2 12 2Z"/></svg>
         <span class="label">GitHub</span>
       </a>
@@ -45,75 +45,221 @@
   <div class="layout">
 
     <aside class="sidebar">
-      <section class="card">
-        <div class="card-header"><h2>On this page</h2></div>
-        <nav class="about-nav" aria-label="About sections">
-          <button class="about-nav-item" data-section="overview" type="button">
+      <p class="doc-eyebrow">Documentation</p>
+      <nav class="about-nav" aria-label="About sections">
+        <button class="about-nav-item" data-section="overview" type="button">
+          <span class="about-nav-icon icon-blue"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9h13v-9"/></svg></span>
+          <span class="about-nav-text">
             <span class="about-nav-title">Overview</span>
             <span class="about-nav-desc">What is enCAGE?</span>
-          </button>
-          <button class="about-nav-item" data-section="results" type="button">
+          </span>
+        </button>
+        <button class="about-nav-item" data-section="results" type="button">
+          <span class="about-nav-icon icon-green"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17 9 11l4 4 8-8" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 7h6v6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span class="about-nav-text">
             <span class="about-nav-title">Understanding Results</span>
             <span class="about-nav-desc">What does my prediction mean?</span>
-          </button>
-          <button class="about-nav-item" data-section="descriptors" type="button">
+          </span>
+        </button>
+        <button class="about-nav-item" data-section="descriptors" type="button">
+          <span class="about-nav-icon icon-indigo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3 4 7.5v9L12 21l8-4.5v-9Z"/><path d="M4 7.5 12 12l8-4.5M12 12v9" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span class="about-nav-text">
             <span class="about-nav-title">Descriptors</span>
             <span class="about-nav-desc">What are these numbers?</span>
-          </button>
-          <button class="about-nav-item" data-section="methods" type="button">
+          </span>
+        </button>
+        <button class="about-nav-item" data-section="methods" type="button">
+          <span class="about-nav-icon icon-orange"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 13.5a7.6 7.6 0 0 0 0-3l1.8-1.4-2-3.4-2.1.6a7.6 7.6 0 0 0-2.6-1.5L14 2.5h-4l-.5 2.3a7.6 7.6 0 0 0-2.6 1.5l-2.1-.6-2 3.4L4.6 10.5a7.6 7.6 0 0 0 0 3l-1.8 1.4 2 3.4 2.1-.6a7.6 7.6 0 0 0 2.6 1.5l.5 2.3h4l.5-2.3a7.6 7.6 0 0 0 2.6-1.5l2.1.6 2-3.4Z" stroke-linejoin="round"/></svg></span>
+          <span class="about-nav-text">
             <span class="about-nav-title">Methods</span>
             <span class="about-nav-desc">How are the calculations performed?</span>
-          </button>
-          <button class="about-nav-item" data-section="examples" type="button">
+          </span>
+        </button>
+        <button class="about-nav-item" data-section="examples" type="button">
+          <span class="about-nav-icon icon-gold"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2.5 14.6 8.9 21.5 9.5 16.2 13.9 17.8 20.7 12 17 6.2 20.7 7.8 13.9 2.5 9.5 9.4 8.9Z" stroke-linejoin="round"/></svg></span>
+          <span class="about-nav-text">
             <span class="about-nav-title">Examples</span>
             <span class="about-nav-desc">What does enCAGE predict for known proteins?</span>
-          </button>
-        </nav>
+          </span>
+        </button>
+      </nav>
+
+      <section class="card glance-card">
+        <div class="card-header"><h2>enCAGE at a glance</h2></div>
+        <div class="card-body">
+          <ul class="glance-list">
+            <li>
+              <span class="glance-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="0.6" fill="currentColor"/></svg></span>
+              <span><p class="glance-label">Purpose</p><p class="glance-value">Predict protein compatibility with apoferritin encapsulation</p></span>
+            </li>
+            <li>
+              <span class="glance-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0-12 4.5 4.5M12 3 7.5 7.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 16.5V19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span><p class="glance-label">Input</p><p class="glance-value">PDB file or PDB ID</p></span>
+            </li>
+            <li>
+              <span class="glance-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5" stroke-linecap="round"/></svg></span>
+              <span><p class="glance-label">Output</p><p class="glance-value">Prediction, descriptor values and mechanistic explanation</p></span>
+            </li>
+            <li>
+              <span class="glance-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3 4 7.5v9L12 21l8-4.5v-9Z"/></svg></span>
+              <span><p class="glance-label">Method</p><p class="glance-value">Descriptor-guided framework (calibrated on experimental data)</p></span>
+            </li>
+            <li>
+              <span class="glance-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5.5l4 2.3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span><p class="glance-label">Runtime</p><p class="glance-value">Typically &lt; 30 seconds</p></span>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="card citation-card">
+        <div class="card-body">
+          <p class="citation-heading">
+            <span class="citation-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5" stroke-linecap="round"/></svg></span>
+            Scientific basis
+          </p>
+          <p class="citation-text">
+            enCAGE implements the descriptor-guided framework described in Li, H. and Carmali, S.,
+            <em>A Descriptor-Guided Framework for Protein Encapsulation in Apoferritin Nanocages</em>.
+          </p>
+          <p class="citation-meta">
+            Cite the software: Li, H. and Carmali, S. enCAGE: Cargo Assessment for Guided
+            Encapsulation. Zenodo. doi:
+            <a href="https://zenodo.org/records/21699918" target="_blank" rel="noopener">10.5281/zenodo.21699918</a>
+          </p>
+          <a class="btn-citation" href="https://zenodo.org/records/21699918" target="_blank" rel="noopener">
+            View on Zenodo
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M7 17 17 7M8 7h9v9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
       </section>
     </aside>
 
     <section class="main-panel">
-      <a class="back-link" href="{{ url_for('index') }}">← Back to enCAGE</a>
 
       <div class="about-section" id="section-overview">
-        <h1 class="page-title">Overview</h1>
-        <p class="page-lede">What is enCAGE?</p>
-        <section class="card">
-          <div class="card-body prose">
-            <p>
-              Apoferritin is a 24-subunit protein shell, about 12 nm across, that encloses a
-              hollow ~8 nm cavity. Under acidic conditions the shell falls apart into its
-              individual subunits; neutralising the pH drives it to reform — and whatever cargo
-              happens to be nearby when it closes back up gets swept up inside. This pH-cycling
-              behaviour is widely used to load small molecules and metal nanoparticles into
-              ferritin nanocages, but which <em>protein</em> cargos load cleanly, and which don't,
-              has been harder to predict.
-            </p>
-            <p>
-              <strong>enCAGE</strong> (Cargo Assessment for Guided Encapsulation) answers that
-              question directly from a protein's 3D structure. It computes three physicochemical
-              descriptors — steric compatibility, electrostatic complementarity, and structural
-              organisation — and applies a hierarchical decision rule, calibrated on an
-              experimental cargo panel, to predict which of three assembly regimes a given
-              protein cargo is likely to follow. A cargo that fits none of them — oversized and
-              too rigid to repack — is instead flagged as predicted non-encapsulating.
-            </p>
-            <p>
-              Use the sections on the left to explore what a prediction means
-              (<strong>Understanding Results</strong>), what each number in your result
-              represents (<strong>Descriptors</strong>), how the calculations are actually
-              performed (<strong>Methods</strong>), and how well the framework holds up against
-              known proteins (<strong>Examples</strong>).
-            </p>
-            <p>
-              enCAGE is a heuristic design aid, not a validated classifier — see
-              <strong>Methods</strong> for the calibration caveats that matter most.
-            </p>
+        <p class="doc-breadcrumb">Documentation <span class="sep">›</span> <span class="current">Overview</span></p>
+
+        <section class="overview-hero">
+          <h1 class="page-title">Overview</h1>
+          <p class="overview-hero-sub">Predict protein compatibility with apoferritin nanocage encapsulation</p>
+          <p class="overview-hero-lede">
+            enCAGE uses experimentally derived structural descriptors to estimate whether a
+            protein is likely to undergo productive encapsulation inside apoferritin.
+          </p>
+          <div class="overview-pills">
+            <span class="overview-pill"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3 4 7.5v9L12 21l8-4.5v-9Z"/></svg>Descriptor-guided</span>
+            <span class="overview-pill"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>Interpretable</span>
+            <span class="overview-pill"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.5 4 6 4 9s-1.5 6.5-4 9c-2.5-2.5-4-6-4-9s1.5-6.5 4-9Z"/></svg>Browser-based</span>
+            <span class="overview-pill"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10.5" width="16" height="10.5" rx="2"/><path d="M7.5 10.5V7a4.5 4.5 0 0 1 9 0v3.5"/></svg>No uploads stored</span>
           </div>
         </section>
+
+        <div class="challenge-grid">
+          <div class="challenge-card challenge-blue">
+            <span class="challenge-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="0.8" fill="currentColor"/></svg></span>
+            <p class="challenge-title">The challenge</p>
+            <p class="challenge-desc">
+              Loading proteins into ferritin nanocages is still largely empirical. A cargo must
+              be small enough to fit inside the ~8 nm cavity, yet compatible with the interior
+              surface charge to avoid non-productive interactions. These factors are difficult
+              to predict from sequence alone.
+            </p>
+          </div>
+          <div class="challenge-card challenge-green">
+            <span class="challenge-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M6 6l2 2M16 16l2 2M6 18l2-2M16 8l2-2" stroke-linecap="round"/></svg></span>
+            <p class="challenge-title">What enCAGE does</p>
+            <p class="challenge-desc">
+              enCAGE analyses three physicochemical descriptors from a protein's 3D
+              structure — steric compatibility, electrostatic complementarity and structural
+              organisation — and applies a hierarchical decision framework calibrated on an
+              experimental cargo panel.
+            </p>
+          </div>
+          <div class="challenge-card challenge-orange">
+            <span class="challenge-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5" stroke-linecap="round"/></svg></span>
+            <p class="challenge-title">What you receive</p>
+            <ul class="challenge-checklist">
+              <li>Compatibility classification (Regime I, II or III)</li>
+              <li>Descriptor values with interpretation</li>
+              <li>Mechanistic explanation</li>
+              <li>Downloadable report</li>
+            </ul>
+          </div>
+        </div>
+
+        <section class="pipeline">
+          <h2>How enCAGE works</h2>
+          <div class="pipeline-row">
+            <div class="pipeline-step">
+              <span class="pipeline-icon pipeline-blue"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2.5c2.5 2 2.5 4.5 0 6.5s-2.5 4.5 0 6.5 2.5 4.5 0 6"/></svg></span>
+              <p class="pipeline-title">Protein Structure</p>
+              <p class="pipeline-desc">Upload a PDB file or enter a PDB ID.</p>
+            </div>
+            <span class="pipeline-arrow" aria-hidden="true">→</span>
+            <div class="pipeline-step">
+              <span class="pipeline-icon pipeline-green"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 4 7.5v9L12 21l8-4.5v-9Z"/><path d="M4 7.5 12 12l8-4.5M12 12v9" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <p class="pipeline-title">Descriptor Extraction</p>
+              <p class="pipeline-desc">Compute size, charge and structural organisation descriptors.</p>
+            </div>
+            <span class="pipeline-arrow" aria-hidden="true">→</span>
+            <div class="pipeline-step">
+              <span class="pipeline-icon pipeline-violet"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="5.5" r="2"/><circle cx="6" cy="18.5" r="2"/><circle cx="12" cy="18.5" r="2"/><circle cx="18" cy="18.5" r="2"/><path d="M12 7.5v6M12 13.5 6 16.5M12 13.5v5M12 13.5l6 3" stroke-linecap="round"/></svg></span>
+              <p class="pipeline-title">Decision Framework</p>
+              <p class="pipeline-desc">Apply experimentally derived rules to determine the assembly regime.</p>
+            </div>
+            <span class="pipeline-arrow" aria-hidden="true">→</span>
+            <div class="pipeline-step">
+              <span class="pipeline-icon pipeline-orange"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="2.5" width="14" height="19" rx="2"/><path d="M8.5 14v3M12 12v5M15.5 9.5V17" stroke-linecap="round"/></svg></span>
+              <p class="pipeline-title">Prediction Report</p>
+              <p class="pipeline-desc">Receive prediction, descriptor values and mechanistic explanation.</p>
+            </div>
+          </div>
+        </section>
+
+        <div class="callout-warning">
+          <span class="callout-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 2v6L4 19a2 2 0 0 0 1.8 3h12.4A2 2 0 0 0 20 19l-5-11V2"/><path d="M9 2h6M6 15h12"/></svg></span>
+          <div>
+            <p class="callout-title">Important</p>
+            <p class="callout-text">
+              enCAGE is intended as a design-support tool rather than a validated classifier.
+              Predictions should be interpreted alongside experimental validation and other
+              considerations relevant to your system.
+            </p>
+          </div>
+        </div>
+
+        <div class="trust-bar foundation-grid">
+          <div class="trust-item">
+            <span class="trust-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 2v6L4 19a2 2 0 0 0 1.8 3h12.4A2 2 0 0 0 20 19l-5-11V2"/><path d="M9 2h6M6 15h12"/></svg></span>
+            <div><p class="trust-title">Experimental foundation</p><p class="trust-sub">Calibrated on a panel of representative protein cargos with known encapsulation outcomes.</p></div>
+          </div>
+          <div class="trust-item">
+            <span class="trust-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <div><p class="trust-title">Transparent &amp; interpretable</p><p class="trust-sub">Rules and thresholds are explicit and biologically meaningful.</p></div>
+          </div>
+          <div class="trust-item">
+            <span class="trust-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></span>
+            <div><p class="trust-title">Reproducible</p><p class="trust-sub">All calculations use open-source tools and documented parameters.</p></div>
+          </div>
+          <div class="trust-item">
+            <span class="trust-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10.5" width="16" height="10.5" rx="2"/><path d="M7.5 10.5V7a4.5 4.5 0 0 1 9 0v3.5"/></svg></span>
+            <div><p class="trust-title">Privacy first</p><p class="trust-sub">Structures are processed transiently — nothing is stored after analysis.</p></div>
+          </div>
+        </div>
+
+        <div class="cta-bar">
+          <span class="cta-icon">?</span>
+          <p>New to enCAGE? Start with <strong>Examples</strong> to see how predictions are made for known proteins.</p>
+          <button class="btn-cta" data-section="examples" type="button">
+            Explore examples
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
       </div>
 
       <div class="about-section hidden" id="section-results">
+        <p class="doc-breadcrumb">Documentation <span class="sep">›</span> <span class="current">Understanding Results</span></p>
         <h1 class="page-title">Understanding Results</h1>
         <p class="page-lede">What does my prediction mean?</p>
         <section class="card">
@@ -230,6 +376,7 @@
       </div>
 
       <div class="about-section hidden" id="section-descriptors">
+        <p class="doc-breadcrumb">Documentation <span class="sep">›</span> <span class="current">Descriptors</span></p>
         <h1 class="page-title">Descriptors</h1>
         <p class="page-lede">What are these numbers?</p>
         <section class="card">
@@ -266,6 +413,7 @@
       </div>
 
       <div class="about-section hidden" id="section-methods">
+        <p class="doc-breadcrumb">Documentation <span class="sep">›</span> <span class="current">Methods</span></p>
         <h1 class="page-title">Methods</h1>
         <p class="page-lede">How are the calculations performed?</p>
 
@@ -350,6 +498,7 @@
       </div>
 
       <div class="about-section hidden" id="section-examples">
+        <p class="doc-breadcrumb">Documentation <span class="sep">›</span> <span class="current">Examples</span></p>
         <h1 class="page-title">Examples</h1>
         <p class="page-lede">What does enCAGE predict for known proteins?</p>
 
@@ -452,7 +601,7 @@
       <a href="https://carmali-lab.com/" target="_blank" rel="noopener">
         <img src="https://carmali-lab.com/images/logo.png" alt="Carmali Lab logo" /> Carmali Lab
       </a>
-      <a href="https://github.com/scarmali/encage_webapp" target="_blank" rel="noopener">
+      <a href="https://github.com/scarmali/encage" target="_blank" rel="noopener">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.58 2 12.19c0 4.5 2.87 8.31 6.84 9.66.5.1.68-.22.68-.49 0-.24-.01-.87-.01-1.71-2.78.62-3.37-1.37-3.37-1.37-.45-1.18-1.11-1.49-1.11-1.49-.91-.64.07-.63.07-.63 1 .07 1.53 1.05 1.53 1.05.89 1.57 2.34 1.11 2.91.85.09-.66.35-1.11.63-1.37-2.22-.26-4.56-1.14-4.56-5.06 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.31.1-2.73 0 0 .84-.28 2.75 1.05a9.3 9.3 0 0 1 5 0c1.9-1.33 2.75-1.05 2.75-1.05.55 1.42.2 2.47.1 2.73.64.72 1.03 1.63 1.03 2.75 0 3.93-2.34 4.79-4.57 5.05.36.32.68.94.68 1.9 0 1.37-.01 2.48-.01 2.81 0 .27.18.6.69.49A10.02 10.02 0 0 0 22 12.19C22 6.58 17.52 2 12 2Z"/></svg>
         Source code
       </a>

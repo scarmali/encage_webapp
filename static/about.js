@@ -26,7 +26,11 @@
     if (opts.scroll !== false) window.scrollTo({ top: 0, behavior: "auto" });
   }
 
-  navItems.forEach(function (item) {
+  // Anything with a data-section attribute can jump to a section — the
+  // sidebar nav items, plus one-off links like the "Explore examples" CTA
+  // at the bottom of Overview. Only .about-nav-item gets the active-state
+  // highlight, handled inside showSection.
+  document.querySelectorAll("[data-section]").forEach(function (item) {
     item.addEventListener("click", function () {
       var id = item.dataset.section;
       showSection(id);
