@@ -216,14 +216,14 @@ webapp/
 
 ## Citation
 
-If you use enCAGE, please cite:
+Cite the library rather than this interface — the archived, citable release lives
+in [scarmali/encage](https://github.com/scarmali/encage):
 
-> [Author list]. enCAGE: Cargo Assessment for Guided Encapsulation.
-> Zenodo. https://doi.org/XX.XXXX/zenodo.XXXXXXX
+> Li, H. and Carmali, S. enCAGE: Cargo Assessment for Guided Encapsulation.
+> Zenodo. https://doi.org/10.5281/zenodo.21699917
 
-<!-- TODO: replace with the Zenodo concept DOI once the GitHub release has
-     been archived (see repo root for release/archiving steps). The concept
-     DOI always resolves to the latest version. -->
+That concept DOI covers all releases and always resolves to the latest. Version
+DOIs for individual releases are listed on the Zenodo record.
 
 ## Notes / limitations
 
