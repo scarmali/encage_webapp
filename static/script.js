@@ -1,24 +1,4 @@
 (function () {
-  const options = document.querySelectorAll(".input-option");
-  const panelUpload = document.getElementById("panel-upload");
-  const panelFetch = document.getElementById("panel-fetch");
-  const panelExample = document.getElementById("panel-example");
-
-  function selectOption(which) {
-    options.forEach((o) => {
-      const active = o.dataset.option === which;
-      o.classList.toggle("active", active);
-      o.setAttribute("aria-selected", active ? "true" : "false");
-    });
-    panelUpload.classList.toggle("hidden", which !== "upload");
-    panelFetch.classList.toggle("hidden", which !== "fetch");
-    panelExample.classList.toggle("hidden", which !== "example");
-  }
-
-  options.forEach((option) => {
-    option.addEventListener("click", () => selectOption(option.dataset.option));
-  });
-
   const dropzone = document.getElementById("dropzone");
   const fileInput = document.getElementById("fileInput");
   const fileNameEl = document.getElementById("fileName");
@@ -45,6 +25,7 @@
   });
 
   const pdbIdInput = document.getElementById("pdbIdInput");
+  const exampleSelect = document.getElementById("exampleSelect");
   const phInput = document.getElementById("phInput");
   const cationicInput = document.getElementById("cationicInput");
   const chargeOverride = document.getElementById("chargeOverride");
@@ -54,7 +35,7 @@
   const analyzeBtn = document.getElementById("analyzeBtn");
   const errorMsg = document.getElementById("errorMsg");
   const loading = document.getElementById("loading");
-  const inputCard = document.querySelector(".input-card");
+  const inputCard = document.getElementById("inputCard");
   const resultCard = document.getElementById("resultCard");
 
   const regimeSectionLabel = document.getElementById("regimeSectionLabel");
@@ -149,26 +130,30 @@
       notesBlock.innerHTML = `<p class="notes-empty">No caveats flagged for this call.</p>`;
     }
 
-    resultCard.classList.remove("is-empty");
+    resultCard.classList.remove("hidden");
     resultCard.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
+  // The three input columns (upload / PDB ID / example) are all visible at
+  // once now, rather than tabs — so priority order decides which one wins
+  // if more than one is filled in: an uploaded file beats a typed ID, which
+  // beats a chosen example.
   async function runAnalysis(pdbIdOverride) {
     clearError();
-    const activeOption = document.querySelector(".input-option.active").dataset.option;
 
     const form = new FormData();
     if (pdbIdOverride) {
       form.append("pdb_id", pdbIdOverride);
-    } else if (activeOption === "upload") {
-      if (!selectedFile) { showError("Please choose a .pdb file first."); return; }
+    } else if (selectedFile) {
       form.append("pdb_file", selectedFile);
-    } else if (activeOption === "fetch") {
+    } else if (pdbIdInput.value.trim()) {
       const id = pdbIdInput.value.trim();
       if (!/^[A-Za-z0-9]{4}$/.test(id)) { showError("Enter a valid 4-character PDB ID, e.g. 4CHA."); return; }
       form.append("pdb_id", id);
+    } else if (exampleSelect.value) {
+      form.append("pdb_id", exampleSelect.value);
     } else {
-      showError("Select an example protein above, or switch to Upload / Enter PDB ID.");
+      showError("Choose a file, enter a PDB ID, or pick an example above.");
       return;
     }
     if (phInput.value) form.append("ph", phInput.value);
@@ -198,32 +183,23 @@
 
   analyzeBtn.addEventListener("click", () => runAnalysis());
 
-  document.querySelectorAll(".example-item").forEach((item) => {
-    item.addEventListener("click", () => {
-      selectOption("fetch");
-      pdbIdInput.value = item.dataset.pdb;
-      multidomainInput.value = item.dataset.multidomain || "";
-      runAnalysis(item.dataset.pdb);
-    });
+  // Picking an example pre-fills its known multidomain flag (so Advanced
+  // settings shows the right default if opened) without auto-running —
+  // the user still presses the shared Run button below.
+  exampleSelect.addEventListener("change", () => {
+    if (!exampleSelect.value) return;
+    const opt = exampleSelect.selectedOptions[0];
+    multidomainInput.value = (opt && opt.dataset.multidomain) || "";
   });
 
-  const tryExampleLink = document.getElementById("tryExampleLink");
-  if (tryExampleLink) {
-    tryExampleLink.addEventListener("click", (e) => {
-      e.preventDefault();
-      selectOption("example");
-      inputCard.scrollIntoView({ behavior: "smooth", block: "start" });
-    });
-  }
-
   document.getElementById("resetBtn").addEventListener("click", () => {
-    resultCard.classList.add("is-empty");
+    resultCard.classList.add("hidden");
     selectedFile = null;
     fileInput.value = "";
     fileNameEl.textContent = "";
     pdbIdInput.value = "";
+    exampleSelect.value = "";
     multidomainInput.value = "";
-    selectOption("upload");
     clearError();
     inputCard.scrollIntoView({ behavior: "smooth", block: "start" });
   });

@@ -109,7 +109,7 @@
                   </span>
                   <span class="example-regime-chip regime-1">Regime I</span>
                 </button>
-                <button class="example-item" type="button" data-pdb="1AO6">
+                <button class="example-item" type="button" data-pdb="1AO6" data-multidomain="true">
                   <span class="example-meta">
                     <span class="example-name">Human serum albumin</span>
                     <span class="example-pdb">PDB 1AO6</span>
@@ -145,6 +145,20 @@
           </div>
           <p class="hint">
             Leave blank to use defaults (pH 7.4; net charge ≥ 5.0 flags off-pathway assembly).
+          </p>
+
+          <div>
+            <label class="field-label" for="multidomainInput">Multidomain / flexible?</label>
+            <select class="text-input" id="multidomainInput">
+              <option value="">Not specified (default)</option>
+              <option value="true">Yes — multidomain / flexible</option>
+              <option value="false">No — single-domain / rigid</option>
+            </select>
+          </div>
+          <p class="hint">
+            Only consulted when the cargo is bigger than the ~8 nm cavity. Determines whether
+            oversized cargo is called Regime II (accommodation) or predicted non-encapsulation;
+            left unspecified, oversized cargo is flagged as unresolved rather than guessed.
           </p>
 
           <details class="advanced">
@@ -269,7 +283,7 @@
         <div class="card">
           <div class="card-header"><h2>Prediction</h2></div>
           <div class="card-body">
-            <p class="section-label">Predicted regime</p>
+            <p class="section-label" id="regimeSectionLabel">Predicted regime</p>
             <div class="regime-badge" id="regimeBadge">
               <span class="regime-roman" id="regimeRoman">I</span>
               <span class="regime-text" id="regimeText">Efficient luminal encapsulation</span>

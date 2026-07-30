@@ -39,4 +39,21 @@
   });
 
   showSection((location.hash || "").replace("#", ""), { scroll: false });
+
+  // Report which encage_core the backend is actually running. The frontend is
+  // static and the version lives in Python, so it has to be fetched. Kept quiet
+  // on failure: an unreachable backend shouldn't put an error in the footer.
+  var versionEl = document.getElementById("footerVersion");
+  if (versionEl && window.fetch) {
+    var apiBase = window.ENCAGE_API_BASE || "";
+    fetch(apiBase + "/api/health")
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) {
+        if (d && d.encage_core_version) {
+          versionEl.textContent = "enCAGE core v" + d.encage_core_version;
+          versionEl.hidden = false;
+        }
+      })
+      .catch(function () { /* offline or backend asleep - stay hidden */ });
+  }
 })();

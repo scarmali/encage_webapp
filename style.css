@@ -21,6 +21,10 @@
   --regime2-bg: #fbf3df;
   --regime3: #c4392b;
   --regime3-bg: #fbe9e7;
+  --regime-ne: #6a4fa0;
+  --regime-ne-bg: #f0ebf9;
+  --regime-unresolved: #5c6b7a;
+  --regime-unresolved-bg: #edf1f5;
   --radius: 16px;
   --bar-gradient: linear-gradient(135deg, var(--blue-500) 0%, var(--blue-400) 100%);
   --shadow: 0 1px 2px rgba(15, 32, 56, 0.05), 0 8px 24px rgba(15, 32, 56, 0.08);
@@ -306,6 +310,8 @@ a { color: var(--blue-600); }
 .example-regime-chip.regime-1 { background: var(--regime1-bg); color: var(--regime1); }
 .example-regime-chip.regime-2 { background: var(--regime2-bg); color: var(--regime2); }
 .example-regime-chip.regime-3 { background: var(--regime3-bg); color: var(--regime3); }
+.example-regime-chip.regime-ne { background: var(--regime-ne-bg); color: var(--regime-ne); }
+.example-regime-chip.regime-unresolved { background: var(--regime-unresolved-bg); color: var(--regime-unresolved); }
 
 .field-label {
   display: block;
@@ -663,6 +669,9 @@ a { color: var(--blue-600); }
 .regime-badge.regime-1 { background: var(--regime1-bg); color: var(--regime1); }
 .regime-badge.regime-2 { background: var(--regime2-bg); color: var(--regime2); }
 .regime-badge.regime-3 { background: var(--regime3-bg); color: var(--regime3); }
+/* Predicted non-encapsulation: outside Regimes I-III, so no numeral. */
+.regime-badge.regime-ne { background: var(--regime-ne-bg); color: var(--regime-ne); }
+.regime-badge.regime-unresolved { background: var(--regime-unresolved-bg); color: var(--regime-unresolved); }
 .regime-roman {
   display: inline-flex;
   align-items: center;
@@ -677,6 +686,8 @@ a { color: var(--blue-600); }
 .regime-badge.regime-1 .regime-roman { background: var(--regime1); }
 .regime-badge.regime-2 .regime-roman { background: var(--regime2); }
 .regime-badge.regime-3 .regime-roman { background: var(--regime3); }
+.regime-badge.regime-ne .regime-roman { background: var(--regime-ne); font-size: 0.78rem; }
+.regime-badge.regime-unresolved .regime-roman { background: var(--regime-unresolved); font-size: 0.62rem; }
 .regime-text { font-size: 0.92rem; }
 .regime-blurb {
   font-size: 0.86rem;
@@ -868,6 +879,13 @@ table.descriptor-table td.ref { color: var(--ink-soft); }
   line-height: 1.5;
   margin: 0;
 }
+/* deployed encage_core version - deliberately understated */
+.footer-version {
+  margin-top: 4px !important;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.75;
+}
+.footer-version[hidden] { display: none; }
 
 /* ---- about / article page ---- */
 .article {
