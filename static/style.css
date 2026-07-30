@@ -160,8 +160,24 @@ a { color: var(--blue-600); }
   gap: 20px;
   align-items: start;
 }
+/* Below 900px the sidebar (nav + "at a glance" + citation) would otherwise
+   stack entirely above the actual page content, forcing a long scroll before
+   reaching anything you came to read. Instead, reflow into three regions —
+   a compact nav strip, then the content, then the supplementary cards —
+   using grid areas so the DOM order (which desktop's sticky sidebar needs)
+   doesn't have to change. */
 @media (max-width: 900px) {
-  .layout { grid-template-columns: 1fr; }
+  .layout {
+    grid-template-columns: 1fr;
+    grid-template-areas: "nav" "main" "extras";
+  }
+  .sidebar { display: contents; }
+  /* min-width: 0 overrides the grid item's default min-width: auto, which
+     would otherwise let the nav strip's non-shrinking flex row force the
+     whole page wider than the viewport instead of scrolling internally. */
+  .sidebar-nav-block { grid-area: nav; min-width: 0; }
+  .sidebar-extras { grid-area: extras; margin-top: 8px; min-width: 0; }
+  .main-panel { grid-area: main; }
 }
 
 .sidebar { position: relative; }
@@ -1144,6 +1160,36 @@ table.descriptor-table td.ref { color: var(--ink-soft); }
 .about-nav-item.active .about-nav-title { color: var(--blue-600); }
 @media (hover: hover) {
   .about-nav-item:not(.active):hover { background: var(--bg); }
+}
+
+/* Compact horizontal tab strip on mobile instead of a tall stacked list —
+   the full icon+title+description layout only makes sense with the vertical
+   space desktop's sidebar has to spare. */
+@media (max-width: 900px) {
+  .about-nav {
+    flex-direction: row;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .about-nav::-webkit-scrollbar { display: none; }
+  .about-nav-item {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    flex-shrink: 0;
+    width: 84px;
+    gap: 4px;
+    padding: 10px 6px;
+    border-bottom: none;
+    border-left: none;
+    border-right: 1px solid var(--border);
+  }
+  .about-nav-item:last-child { border-right: none; }
+  .about-nav-item.active { border-left: none; border-bottom: 2px solid var(--blue-600); }
+  .about-nav-icon { margin-top: 0; }
+  .about-nav-desc { display: none; }
+  .about-nav-title { font-size: 0.72rem; line-height: 1.25; }
 }
 
 .about-section.hidden { display: none; }
