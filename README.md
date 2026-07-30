@@ -33,6 +33,16 @@ infers automatically:
 | `False` | Predicted: no encapsulation (oversized, single-domain/rigid) |
 | `None` (default) | Unresolved — flagged with guidance to specify `True`/`False` rather than silently defaulting to Regime II |
 
+Predicted non-encapsulation is reported as **`NE`**, not as a "Regime IV". Regimes
+I–III were each characterised experimentally; this outcome falls outside all three,
+follows from the logic of the framework rather than from data (the calibration panel
+contained no oversized rigid single-domain cargo), and remains to be tested. The app
+shows it without a Roman numeral for that reason.
+
+The command-line `ferritin_regime_predictor.py` in the repo root implements the same
+branch and is kept in lockstep with `encage_core.py`. There, set the flag per protein
+via a `multidomain` column in `--overrides`, or globally with `--multidomain yes|no`.
+
 ## What's different from the original script
 
 - **Volume**: the server does not have ChimeraX installed, so steric volume

@@ -95,7 +95,8 @@
               descriptors — steric compatibility, electrostatic complementarity, and structural
               organisation — and applies a hierarchical decision rule, calibrated on an
               experimental cargo panel, to predict which of three assembly regimes a given
-              protein cargo is likely to follow.
+              protein cargo is likely to follow. A cargo that fits none of them — oversized and
+              too rigid to repack — is instead flagged as predicted non-encapsulating.
             </p>
             <p>
               Use the sections on the left to explore what a prediction means
@@ -178,12 +179,52 @@
             <p><strong>How the call is made:</strong> charge is checked first, because a strongly
               cationic surface can override everything else. Then, for charge-compatible cargos,
               size decides between Regime I (fits within ~8 nm) and Regime II (larger, flagged
-              for structural flexibility).</p>
+              for structural flexibility). An oversized cargo with no capacity to flex falls
+              outside all three regimes — see below.</p>
             <ol class="decision-steps">
               <li><strong>Is the surface strongly positively charged</strong> (net charge above the cationic threshold)? If yes → <strong>Regime III</strong>.</li>
               <li><strong>Otherwise, does the protein's longest dimension (Dmax) fit within ~8 nm?</strong> If yes → <strong>Regime I</strong>.</li>
-              <li><strong>If it's charge-compatible but oversized</strong> → <strong>Regime II</strong>, flagged as worth testing since flexibility can't be judged from a static structure alone.</li>
+              <li><strong>If it's charge-compatible but oversized, is it multidomain or conformationally flexible?</strong> If yes → <strong>Regime II</strong>, flagged as worth testing since flexibility can't be judged from a static structure alone.</li>
+              <li><strong>If it's charge-compatible, oversized and single-domain / rigid</strong> → <strong>no encapsulation predicted</strong> — outside Regimes I–III.</li>
             </ol>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-header"><h2>When encapsulation isn't predicted</h2></div>
+          <div class="card-body prose">
+            <div class="regime-explain-list">
+              <div class="regime-explain">
+                <div class="regime-badge regime-ne">
+                  <span class="regime-roman">✕</span>
+                  <span class="regime-text">Predicted: no encapsulation</span>
+                </div>
+                <p>
+                  Your protein is charge-compatible with the cage interior, but it is larger than
+                  the nominal ~8 nm cavity <em>and</em> single-domain or rigid. Regime II cargos
+                  get in despite being oversized because they can flex and repack as the shell
+                  closes; a rigid single-domain cargo has no such route, so there is no expected
+                  mechanism by which it would end up inside a properly reformed cage.
+                </p>
+                <p class="for-you">What this means for you: encapsulation is not expected — consider a smaller cargo, a truncated or split construct, or a larger cage.</p>
+              </div>
+            </div>
+
+            <p>
+              <strong>This is a prediction, not a characterised regime.</strong> Regimes I–III
+              were each observed experimentally in the cargo panel enCAGE was calibrated on.
+              This fourth outcome was not: that panel contained no oversized, rigid, single-domain
+              protein, so the branch follows from the logic of the framework rather than from
+              data. It is deliberately shown without a Roman numeral to keep that distinction
+              visible — it marks the boundary at which encapsulation is expected to fail, and
+              it remains to be tested.
+            </p>
+            <p>
+              Because conformational flexibility can't be measured from one static structure,
+              enCAGE does not guess it. The <strong>Multidomain / flexible?</strong> field is
+              yours to set. Leave it unspecified and an oversized cargo is reported as
+              <em>unresolved</em> rather than silently assigned to either outcome.
+            </p>
           </div>
         </section>
       </div>
@@ -288,9 +329,11 @@
               The three descriptors feed into a fixed hierarchy: net charge is evaluated first,
               because a strongly cationic surface can override everything else and divert the
               cargo into off-pathway assembly (Regime III). Charge-compatible cargos are then
-              sorted by Dmax against the ~8 nm cavity diameter into Regime I (fits) or Regime II
-              (oversized, flagged for structural flexibility that can't be assessed from a single
-              static structure).
+              sorted by Dmax against the ~8 nm cavity diameter into Regime I (fits) or, if
+              oversized, resolved on structural organisation: multidomain or conformationally
+              flexible cargos are assigned Regime II, while single-domain rigid cargos are
+              reported as predicted non-encapsulating — an outcome outside Regimes I–III that
+              follows from the framework and has not been tested experimentally.
             </p>
             <p>
               These thresholds — the default pH of 7.4 and the +5.0 cationic cutoff — are
@@ -298,8 +341,9 @@
               described in the accompanying manuscript, and are exposed as adjustable parameters
               in the tool rather than hard-coded. enCAGE is a heuristic design aid, not a
               validated classifier: treat Regime II calls especially as "worth testing", not
-              certainty, and expect the quantitative thresholds to need re-tuning for ferritin
-              systems that assemble by a different mechanism — see Examples.
+              certainty, treat a no-encapsulation call as an untested prediction rather than a
+              hard exclusion, and expect the quantitative thresholds to need re-tuning for
+              ferritin systems that assemble by a different mechanism — see Examples.
             </p>
           </div>
         </section>

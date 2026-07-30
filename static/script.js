@@ -57,6 +57,7 @@
   const inputCard = document.querySelector(".input-card");
   const resultCard = document.getElementById("resultCard");
 
+  const regimeSectionLabel = document.getElementById("regimeSectionLabel");
   const regimeBadge = document.getElementById("regimeBadge");
   const regimeRoman = document.getElementById("regimeRoman");
   const regimeText = document.getElementById("regimeText");
@@ -71,18 +72,23 @@
     I: "Compact and charge-matched — this cargo should load cleanly into the ferritin cavity.",
     II: "Bigger than the nominal cavity, but flexible multidomain proteins can still pack in. Worth testing, not guaranteed.",
     III: "Strongly cationic surface — this tends to clump with the cage instead of loading cleanly inside it.",
-    IV: "Bigger than the nominal cavity and single-domain/rigid — adaptive packing isn't expected, so encapsulation is not predicted.",
+    NE: "Bigger than the nominal cavity and single-domain/rigid — adaptive packing isn't expected, so encapsulation is not predicted. " +
+      "This outcome sits outside Regimes I–III: it is a prediction of the framework, not an experimentally characterised regime, and remains to be tested.",
   };
   const UNRESOLVED_BLURB =
     "Bigger than the nominal cavity — whether it loads depends on multidomain flexibility. " +
     "Set “Multidomain / flexible?” above and re-run to resolve.";
 
+  // Regimes I-III are experimentally characterised and carry a numeral. Predicted
+  // non-encapsulation (NE) deliberately does not — the manuscript frames it as
+  // falling outside all three regimes rather than as a fourth regime.
   const REGIME_META = {
     I: { cls: "regime-1", roman: "I" },
     II: { cls: "regime-2", roman: "II" },
     III: { cls: "regime-3", roman: "III" },
-    IV: { cls: "regime-4", roman: "IV" },
+    NE: { cls: "regime-ne", roman: "✕" },
   };
+  const NUMBERED_REGIMES = ["I", "II", "III"];
 
   let lastResult = null;
 
@@ -104,6 +110,12 @@
     lastResult = data;
 
     const meta = REGIME_META[data.regime_number] || { cls: "regime-unresolved", roman: "?" };
+    // Only Regimes I-III are characterised regimes; everything else is an outcome.
+    if (regimeSectionLabel) {
+      regimeSectionLabel.textContent = NUMBERED_REGIMES.includes(data.regime_number)
+        ? "Predicted regime"
+        : "Predicted outcome";
+    }
     regimeBadge.className = `regime-badge ${meta.cls}`;
     regimeRoman.textContent = meta.roman;
     regimeText.textContent = data.regime_label;
@@ -232,7 +244,10 @@
       ["Charge source", d.charge_source],
       ["Relative shape anisotropy", d.kappa2],
       ["Multidomain flag", d.multidomain === null || d.multidomain === undefined ? "not specified" : d.multidomain],
-      ["Predicted regime", `${d.regime_number} (${d.regime_label})`],
+      [
+        NUMBERED_REGIMES.includes(d.regime_number) ? "Predicted regime" : "Predicted outcome",
+        `${d.regime_number} (${d.regime_label})`,
+      ],
       ["Notes", (d.notes || []).join("; ")],
     ];
     const csv = rows.map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");

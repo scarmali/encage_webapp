@@ -13,9 +13,11 @@ run matches the paper rather than the built-in fallback estimators:
 Geometry (Dmax) is computed by enCAGE from the structure and checked against
 Table 1. Cargo whose Dmax exceeds the ~8 nm cavity also carries a
 `multidomain` flag (user-supplied, not auto-detected) so the regime call
-resolves per the four-outcome logic in encage_core.classify_regime; cargo
-that resolves on charge/sterics before that branch is reached still sets the
-flag explicitly for clarity, even though it has no effect on the outcome.
+resolves per encage_core.classify_regime, which returns Regimes I-III plus
+the "NE" predicted-non-encapsulation branch (oversized + single-domain/rigid;
+outside the three characterised regimes and untested). Cargo that resolves on
+charge/sterics before that branch is reached still sets the flag explicitly
+for clarity, even though it has no effect on the outcome.
 
 Table 4 is reproduced at the level of the decision logic: the published
 descriptors (net charge, Dmax, volume ratio) are passed to enCAGE's regime

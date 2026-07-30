@@ -187,8 +187,15 @@ def classify_regime(q, dmax_nm, vol_ratio, cfg, multidomain=None):
     already passed the electrostatic check. None means "not yet resolved" and
     is reported as such rather than silently treated as Regime II.
         True  -> Regime II (accommodation)
-        False -> "Predicted: no encapsulation" (oversized + single-domain/rigid)
+        False -> "NE" / "Predicted: no encapsulation" (oversized + single-domain/rigid)
         None  -> unresolved; caller must supply multidomain=True/False
+
+    Note on "NE": predicted non-encapsulation is deliberately NOT numbered as a
+    fourth regime. Regimes I-III are experimentally characterised; the oversized
+    single-domain/rigid branch falls outside all three and is a prediction of the
+    framework that remains to be tested (no such cargo was in the calibration
+    panel). The code is returned as "NE" so downstream consumers cannot mistake
+    it for a validated regime.
     """
     notes = []
     if not np.isnan(q) and q >= cfg["cationic_threshold"]:
@@ -220,12 +227,16 @@ def classify_regime(q, dmax_nm, vol_ratio, cfg, multidomain=None):
             "Oversized cargo with single-domain/rigid architecture: adaptive packing is not "
             "expected, so encapsulation is not predicted."
         )
-        return "IV", "Predicted: no encapsulation", notes
+        notes.append(
+            "This outcome falls outside Regimes I-III. It is a prediction of the framework "
+            "rather than an experimentally characterised regime, and remains to be tested."
+        )
+        return "NE", "Predicted: no encapsulation", notes
     notes.append(
         "oversized cargo; specify multidomain=True/False to resolve - Regime II if "
         "multidomain/flexible, predicted non-encapsulation if single-domain rigid."
     )
-    return "II/IV (unresolved)", "Unresolved - multidomain flag required", notes
+    return "II/NE (unresolved)", "Unresolved - multidomain flag required", notes
 
 
 # --------------------------------------------------------------------------- #
