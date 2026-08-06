@@ -265,327 +265,1025 @@
       <div class="about-section hidden" id="section-results">
         <p class="doc-breadcrumb">Documentation <span class="sep">›</span> <span class="current">Understanding Results</span></p>
         <h1 class="page-title">Understanding Results</h1>
-        <p class="page-lede">What does my prediction mean?</p>
-        <section class="card">
-          <div class="card-header"><h2>The three assembly regimes</h2></div>
-          <div class="card-body prose">
-            <p>
-              Apoferritin loads a protein cargo by falling apart under acid and reforming once
-              the pH is brought back to neutral — whatever cargo is nearby when the shell closes
-              back up gets swept up inside. Depending on your protein's size, shape, and surface
-              charge, that reassembly plays out one of three ways.
+        <p class="page-lede">Learn what your prediction means and how enCAGE makes each call.</p>
+
+        <section class="card results-overview-card">
+          <div class="card-body">
+            <p class="results-overview-eyebrow">Overview: how enCAGE makes a prediction</p>
+            <p class="results-overview-lede">
+              enCAGE compares your protein with the properties of the ferritin nanocage and
+              follows a simple sequence of checks.
             </p>
-
-            <div class="regime-explain-list">
-              <div class="regime-explain">
-                <div class="regime-badge regime-1">
-                  <span class="regime-roman">I</span>
-                  <span class="regime-text">Efficient luminal encapsulation</span>
-                </div>
-                <p>
-                  Your protein is compact, roughly globular, and its surface charge doesn't
-                  strongly clash with the negatively charged interior of the cage. It gets swept
-                  up cleanly as the shell reforms — the most reliable outcome, with minimal
-                  disruption to nanocage shape and no expected penalty to your protein's own
-                  activity. In our data, luminal encapsulation actually improved an enzyme's
-                  turnover and storage stability.
-                </p>
-                <p class="for-you">What this means for you: expect efficient, reproducible loading.</p>
+            <div class="pipeline-row results-check-row">
+              <div class="pipeline-step">
+                <span class="pipeline-icon pipeline-green"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7Z"/></svg></span>
+                <p class="pipeline-title">1. Charge check</p>
+                <p class="pipeline-desc">Is the surface strongly positively charged?</p>
               </div>
-
-              <div class="regime-explain">
-                <div class="regime-badge regime-2">
-                  <span class="regime-roman">II</span>
-                  <span class="regime-text">Accommodation possible — structural-organisation dependent</span>
-                </div>
-                <p>
-                  Your protein is larger than the cage's nominal ~8 nm internal space — on
-                  paper, it shouldn't fit. But a static structure doesn't capture everything:
-                  multidomain proteins that can flex and repack themselves during reassembly can
-                  still be accommodated, just less predictably than a Regime I cargo. Because
-                  that flexibility can't be read off a single PDB file, this call is a flag, not
-                  a guarantee.
-                </p>
-                <p class="for-you">What this means for you: worth testing experimentally, not a "no".</p>
+              <span class="pipeline-arrow" aria-hidden="true">→</span>
+              <div class="pipeline-step">
+                <span class="pipeline-icon pipeline-blue"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-dasharray="3 3"><circle cx="12" cy="12" r="9"/></svg></span>
+                <p class="pipeline-title">2. Size check</p>
+                <p class="pipeline-desc">If charge-compatible, does it fit inside ~8 nm?</p>
               </div>
-
-              <div class="regime-explain">
-                <div class="regime-badge regime-3">
-                  <span class="regime-roman">III</span>
-                  <span class="regime-text">Charge-driven off-pathway assembly</span>
-                </div>
-                <p>
-                  Your protein carries a strongly positive surface charge. Rather than being
-                  swept neatly inside as the cage reforms, it tends to grab onto the negatively
-                  charged subunits directly, clumping into an off-pathway complex instead of a
-                  clean, hollow nanocage. The protein isn't destroyed, but the loading pathway is
-                  wrong — cage structure is compromised, and, as we saw with lysozyme, enzyme
-                  activity can be almost entirely lost because substrates can no longer reach it.
-                </p>
-                <p class="for-you">What this means for you: expect off-pathway clumping, not clean loading — consider reducing the cargo's net charge, or a different cage system.</p>
+              <span class="pipeline-arrow" aria-hidden="true">→</span>
+              <div class="pipeline-step">
+                <span class="pipeline-icon pipeline-violet"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 18c3-3 3-6 0-9M8 20c3.5-4 3.5-9 0-16M12 18c3-3 3-6 0-9"/></svg></span>
+                <p class="pipeline-title">3. Flexibility check</p>
+                <p class="pipeline-desc">If it's too large, could flexibility allow loading?</p>
               </div>
             </div>
-
-            <p><strong>How the call is made:</strong> charge is checked first, because a strongly
-              cationic surface can override everything else. Then, for charge-compatible cargos,
-              size decides between Regime I (fits within ~8 nm) and Regime II (larger, flagged
-              for structural flexibility). An oversized cargo with no capacity to flex falls
-              outside all three regimes — see below.</p>
-            <ol class="decision-steps">
-              <li><strong>Is the surface strongly positively charged</strong> (net charge above the cationic threshold)? If yes → <strong>Regime III</strong>.</li>
-              <li><strong>Otherwise, does the protein's longest dimension (Dmax) fit within ~8 nm?</strong> If yes → <strong>Regime I</strong>.</li>
-              <li><strong>If it's charge-compatible but oversized, is it multidomain or conformationally flexible?</strong> If yes → <strong>Regime II</strong>, flagged as worth testing since flexibility can't be judged from a static structure alone.</li>
-              <li><strong>If it's charge-compatible, oversized and single-domain / rigid</strong> → <strong>no encapsulation predicted</strong> — outside Regimes I–III.</li>
-            </ol>
+            <p class="results-overview-footer">The answers determine which outcome is most likely.</p>
           </div>
         </section>
 
-        <section class="card">
-          <div class="card-header"><h2>When encapsulation isn't predicted</h2></div>
-          <div class="card-body prose">
-            <div class="regime-explain-list">
-              <div class="regime-explain">
-                <div class="regime-badge regime-ne">
-                  <span class="regime-roman">✕</span>
-                  <span class="regime-text">Predicted: no encapsulation</span>
-                </div>
-                <p>
-                  Your protein is charge-compatible with the cage interior, but it is larger than
-                  the nominal ~8 nm cavity <em>and</em> single-domain or rigid. Regime II cargos
-                  get in despite being oversized because they can flex and repack as the shell
-                  closes; a rigid single-domain cargo has no such route, so there is no expected
-                  mechanism by which it would end up inside a properly reformed cage.
-                </p>
-                <p class="for-you">What this means for you: encapsulation is not expected — consider a smaller cargo, a truncated or split construct, or a larger cage.</p>
+        <section class="regime-section">
+          <p class="section-label">The three assembly regimes</p>
+          <p class="regime-section-lede">
+            Depending on your protein's charge, size and structural features, one of three
+            outcomes is predicted.
+          </p>
+          <div class="regime-cards-grid">
+            <div class="regime-card regime-card-1">
+              <div class="regime-badge regime-1"><span class="regime-roman">I</span><span class="regime-text">Efficient luminal encapsulation</span></div>
+              <div class="cage-icon">
+                <svg width="80" height="80" viewBox="0 0 100 100" fill="none">
+                  <circle cx="50" cy="50" r="34" stroke="var(--border)" stroke-width="3" stroke-dasharray="5 5"/>
+                  <circle cx="50" cy="50" r="14" fill="var(--regime1)" opacity="0.85"/>
+                  <circle cx="43" cy="45" r="4" fill="var(--regime1-bg)"/>
+                  <circle cx="58" cy="55" r="3" fill="var(--regime1-bg)"/>
+                </svg>
               </div>
+              <p class="regime-card-desc">Your protein is compact and charge-compatible. During cage reassembly it is expected to be enclosed inside the nanocage.</p>
+              <p class="regime-card-sub">Typical characteristics</p>
+              <ul class="regime-card-list">
+                <li>Fits within the ~8 nm cavity</li>
+                <li>Charge is compatible (not strongly +)</li>
+                <li>Usually compact or globular</li>
+              </ul>
+              <p class="regime-card-sub">What to expect</p>
+              <p class="regime-card-expect">Reliable encapsulation with minimal disruption to cage assembly.</p>
             </div>
 
-            <p>
-              <strong>This is a prediction, not a characterised regime.</strong> Regimes I–III
-              were each observed experimentally in the cargo panel enCAGE was calibrated on.
-              This fourth outcome was not: that panel contained no oversized, rigid, single-domain
-              protein, so the branch follows from the logic of the framework rather than from
-              data. It is deliberately shown without a Roman numeral to keep that distinction
-              visible — it marks the boundary at which encapsulation is expected to fail, and
-              it remains to be tested.
-            </p>
-            <p>
-              Because conformational flexibility can't be measured from one static structure,
-              enCAGE does not guess it. The <strong>Multidomain / flexible?</strong> field is
-              yours to set. Leave it unspecified and an oversized cargo is reported as
-              <em>unresolved</em> rather than silently assigned to either outcome.
-            </p>
+            <div class="regime-card regime-card-2">
+              <div class="regime-badge regime-2"><span class="regime-roman">II</span><span class="regime-text">Accommodation possible — structural-organisation dependent</span></div>
+              <div class="cage-icon">
+                <svg width="80" height="80" viewBox="0 0 100 100" fill="none">
+                  <circle cx="50" cy="50" r="34" stroke="var(--border)" stroke-width="3" stroke-dasharray="5 5"/>
+                  <path d="M35 35c8 4 8 10 0 15s-8 11 0 15" stroke="var(--regime2)" stroke-width="6" stroke-linecap="round" fill="none"/>
+                  <path d="M58 33c8 5 8 10 0 15s-8 11 0 17" stroke="var(--regime2)" stroke-width="6" stroke-linecap="round" fill="none" opacity="0.6"/>
+                </svg>
+              </div>
+              <p class="regime-card-desc">Your protein appears too large to fit based on its static structure, but flexible or multidomain proteins can sometimes reorganise during cage assembly.</p>
+              <p class="regime-card-sub">Typical characteristics</p>
+              <ul class="regime-card-list">
+                <li>Charge is compatible</li>
+                <li>Larger than the nominal cavity</li>
+                <li>May be flexible or multidomain</li>
+              </ul>
+              <p class="regime-card-sub">What to expect</p>
+              <p class="regime-card-expect">Encapsulation is possible, but should be confirmed experimentally.</p>
+            </div>
+
+            <div class="regime-card regime-card-3">
+              <div class="regime-badge regime-3"><span class="regime-roman">III</span><span class="regime-text">Charge-driven off-pathway assembly</span></div>
+              <div class="cage-icon">
+                <svg width="80" height="80" viewBox="0 0 100 100" fill="none">
+                  <circle cx="50" cy="50" r="34" stroke="var(--border)" stroke-width="3" stroke-dasharray="5 5"/>
+                  <path d="M20 42c8 4 8 10 0 15s-8 11 0 15" stroke="var(--regime3)" stroke-width="6" stroke-linecap="round" fill="none"/>
+                  <path d="M74 38c8 5 8 10 0 15s-8 11 0 17" stroke="var(--regime3)" stroke-width="6" stroke-linecap="round" fill="none" opacity="0.7"/>
+                </svg>
+              </div>
+              <p class="regime-card-desc">A strongly positive surface charge causes the protein to bind to ferritin subunits instead of being enclosed inside the cavity.</p>
+              <p class="regime-card-sub">Typical characteristics</p>
+              <ul class="regime-card-list">
+                <li>Strongly positive surface charge</li>
+                <li>Electrostatics dominate</li>
+                <li>May fit sterically</li>
+              </ul>
+              <p class="regime-card-sub">What to expect</p>
+              <p class="regime-card-expect">Off-pathway assembly and poor encapsulation.</p>
+            </div>
           </div>
         </section>
+
+        <section class="ne-section">
+          <p class="section-label">When no encapsulation is predicted</p>
+          <div class="ne-grid">
+            <div class="ne-main">
+              <div class="regime-badge regime-ne"><span class="regime-roman">✕</span><span class="regime-text">Predicted: no encapsulation</span></div>
+              <p>This outcome is returned when the protein is:</p>
+              <ul>
+                <li>Larger than the ferritin cavity (~8 nm)</li>
+                <li>Not strongly positively charged</li>
+                <li>Unlikely to rearrange during assembly (rigid, single-domain)</li>
+              </ul>
+              <p>
+                Unlike Regime II proteins, rigid single-domain proteins have no obvious way to
+                fold or repack as the cage closes.
+              </p>
+            </div>
+            <div class="ne-box ne-expect-box">
+              <p class="ne-box-title">What to expect</p>
+              <p>Encapsulation is unlikely using standard ferritin reassembly. You may wish to explore:</p>
+              <ul class="ne-icon-list">
+                <li><span class="icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="m8.5 8.5 11 11M20 4 8.5 15.5" stroke-linecap="round"/></svg></span>Smaller construct or truncated protein</li>
+                <li><span class="icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 3h6v5.5a2.5 2.5 0 0 0 5 0V15h-5.5a2.5 2.5 0 0 0 0 5H21M9 3H3.5v5.5a2.5 2.5 0 0 1-5 0V15H3.5a2.5 2.5 0 0 1 0 5H9" stroke-linejoin="round"/></svg></span>Split the protein into domains</li>
+                <li><span class="icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 5 7v10l7 4 7-4V7Z"/></svg></span>Use a different nanocage system</li>
+                <li><span class="icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m4 20 1-5L16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-5 1Z" stroke-linejoin="round"/></svg></span>Modify surface charge</li>
+              </ul>
+            </div>
+            <div class="ne-box ne-why-box">
+              <p class="ne-box-title"><span class="icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5" stroke-linecap="round"/><circle cx="12" cy="7.8" r="0.9" fill="currentColor" stroke="none"/></svg></span>Why isn't this called Regime IV?</p>
+              <p>Regimes I–III were each observed experimentally during calibration.</p>
+              <p>This fourth outcome follows from the logic of the framework when no feasible route to encapsulation exists for a rigid, oversized protein.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="decision-section">
+          <p class="section-label">How the call is made</p>
+          <div class="decision-grid">
+            <div class="decision-tree">
+              <div class="decision-rule">
+                <div class="decision-rule-num">1</div>
+                <div class="decision-rule-body">
+                  <p class="decision-rule-q">Is the protein strongly positively charged?</p>
+                  <div class="decision-rule-branches">
+                    <span class="decision-branch decision-branch-yes">Yes → <strong class="outcome-3">Regime III</strong></span>
+                    <span class="decision-branch">No → continue</span>
+                  </div>
+                </div>
+              </div>
+              <div class="decision-rule">
+                <div class="decision-rule-num">2</div>
+                <div class="decision-rule-body">
+                  <p class="decision-rule-q">Does Dmax fit within ~8 nm?</p>
+                  <div class="decision-rule-branches">
+                    <span class="decision-branch decision-branch-yes">Yes → <strong class="outcome-1">Regime I</strong></span>
+                    <span class="decision-branch">No → continue</span>
+                  </div>
+                </div>
+              </div>
+              <div class="decision-rule">
+                <div class="decision-rule-num">3</div>
+                <div class="decision-rule-body">
+                  <p class="decision-rule-q">Could flexibility allow accommodation?</p>
+                  <div class="decision-rule-branches">
+                    <span class="decision-branch decision-branch-yes">Yes → <strong class="outcome-2">Regime II</strong></span>
+                    <span class="decision-branch">No → <strong class="outcome-ne">No encapsulation predicted</strong></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="decision-thresholds">
+              <p class="decision-thresholds-title">Key thresholds</p>
+              <dl>
+                <div><dt>Cavity diameter</dt><dd>~8 nm</dd></div>
+                <div><dt>Cationic charge threshold</dt><dd>+5 (pH 7.4)</dd></div>
+                <div><dt>Flexibility</dt><dd>Not measurable from static structure</dd></div>
+              </dl>
+            </div>
+          </div>
+        </section>
+
+        <section class="comparison-section">
+          <p class="section-label">Quick comparison</p>
+          <div class="comparison-table-wrap">
+            <table class="comparison-table2">
+              <thead>
+                <tr><th>Outcome</th><th>Charge</th><th>Size (Dmax)</th><th>Flexibility</th><th>Likelihood</th><th>Recommendation</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="outcome-label label-1">Regime I</span><br>Efficient luminal encapsulation</td>
+                  <td>Compatible (not strongly +)</td>
+                  <td>Fits within ~8 nm</td>
+                  <td>Any</td>
+                  <td><span class="dots"><i class="dot on dot-1"></i><i class="dot on dot-1"></i><i class="dot on dot-1"></i><i class="dot on dot-1"></i><i class="dot"></i></span>High</td>
+                  <td>Proceed with encapsulation</td>
+                </tr>
+                <tr>
+                  <td><span class="outcome-label label-2">Regime II</span><br>Accommodation possible</td>
+                  <td>Compatible (not strongly +)</td>
+                  <td>Larger than ~8 nm</td>
+                  <td>Likely flexible / multidomain</td>
+                  <td><span class="dots"><i class="dot on dot-2"></i><i class="dot on dot-2"></i><i class="dot on dot-2"></i><i class="dot"></i><i class="dot"></i></span>Moderate</td>
+                  <td>Worth testing experimentally</td>
+                </tr>
+                <tr>
+                  <td><span class="outcome-label label-3">Regime III</span><br>Charge-driven off-pathway assembly</td>
+                  <td>Strongly positive</td>
+                  <td>Any</td>
+                  <td>Any</td>
+                  <td><span class="dots"><i class="dot on dot-3"></i><i class="dot on dot-3"></i><i class="dot"></i><i class="dot"></i><i class="dot"></i></span>Low</td>
+                  <td>Reduce net charge or use alternative strategy</td>
+                </tr>
+                <tr>
+                  <td><span class="outcome-label label-ne">No encapsulation predicted</span></td>
+                  <td>Compatible (not strongly +)</td>
+                  <td>Larger than ~8 nm</td>
+                  <td>Rigid / single-domain</td>
+                  <td><span class="dots"><i class="dot on dot-ne"></i><i class="dot"></i><i class="dot"></i><i class="dot"></i><i class="dot"></i></span>Very low</td>
+                  <td>Consider smaller construct, split, or different cage</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <div class="callout-info">
+          <span class="callout-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5" stroke-linecap="round"/><circle cx="12" cy="7.8" r="0.9" fill="currentColor" stroke="none"/></svg></span>
+          <p><strong>Remember:</strong> these are predictions based on known rules and empirical thresholds. Experimental validation is always essential.</p>
+        </div>
       </div>
 
       <div class="about-section hidden" id="section-descriptors">
         <p class="doc-breadcrumb">Documentation <span class="sep">›</span> <span class="current">Descriptors</span></p>
-        <h1 class="page-title">Descriptors</h1>
-        <p class="page-lede">What are these numbers?</p>
-        <section class="card">
-          <div class="card-header"><h2>What the descriptor table means</h2></div>
-          <div class="card-body prose">
-            <dl class="glossary">
-              <div class="glossary-item">
-                <dt>Dmax</dt>
-                <dd>The single longest straight-line distance between any two atoms in your protein, in nanometres. This is the strictest test of whether your protein physically fits through the cage's ~8 nm cavity — if Dmax is under 8 nm, your protein's longest "reach" fits inside.</dd>
+
+        <div class="page-header-grid">
+          <div>
+            <h1 class="page-title">Descriptors</h1>
+            <p class="page-lede">How enCAGE interprets your protein</p>
+            <p class="page-intro">
+              Each descriptor captures a different aspect of your protein's size, shape, or
+              surface chemistry. Together, they help enCAGE predict whether a protein can be
+              successfully encapsulated inside ferritin.
+            </p>
+          </div>
+          <div class="mini-pipeline-card">
+            <p class="mini-pipeline-title">How enCAGE uses these descriptors</p>
+            <div class="mini-pipeline-row">
+              <div class="mini-pipeline-step">
+                <span class="mini-pipeline-icon mp-blue"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7Z"/></svg></span>
+                <p><span class="mini-pipeline-num">1</span> Net charge</p>
+                <span>Checked first (electrostatics dominate)</span>
               </div>
-              <div class="glossary-item">
-                <dt>Length × width × thickness</dt>
-                <dd>Your protein's bounding box along its three natural axes (longest to shortest), after rotating the structure to align with its own principal axes. This gives a sense of overall shape beyond just Dmax — a rod-shaped and a disc-shaped protein can share a Dmax but have very different proportions.</dd>
+              <span class="mini-pipeline-arrow" aria-hidden="true">→</span>
+              <div class="mini-pipeline-step">
+                <span class="mini-pipeline-icon mp-indigo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-dasharray="3 3"><circle cx="12" cy="12" r="9"/></svg></span>
+                <p><span class="mini-pipeline-num">2</span> Dmax</p>
+                <span>Steric fit within ~8 nm cavity</span>
               </div>
-              <div class="glossary-item">
-                <dt>Volume ratio</dt>
-                <dd>The fraction of the cage's internal volume your protein would occupy, treating the cavity as a 268 nm³ sphere (~8 nm across). A ratio of 1.00 would mean your protein alone fills the whole cavity. Even a protein small enough to fit can load less efficiently if it occupies a large share of that space.</dd>
+              <span class="mini-pipeline-arrow" aria-hidden="true">→</span>
+              <div class="mini-pipeline-step">
+                <span class="mini-pipeline-icon mp-green"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 18c3-3 3-6 0-9M8 20c3.5-4 3.5-9 0-16M12 18c3-3 3-6 0-9"/></svg></span>
+                <p><span class="mini-pipeline-num">3</span> Flexibility</p>
+                <span>Helps oversized proteins adapt</span>
               </div>
-              <div class="glossary-item">
-                <dt>Molecular volume</dt>
-                <dd>The physical volume of your protein itself, in nm³, before it's expressed as a fraction of the cavity. Estimated with a fast built-in geometric approximation by default, or taken from a ChimeraX solvent-excluded surface if you supplied one under manual overrides.</dd>
+              <span class="mini-pipeline-arrow" aria-hidden="true">→</span>
+              <div class="mini-pipeline-step">
+                <span class="mini-pipeline-icon mp-indigo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-dasharray="3 3"><circle cx="12" cy="12" r="9"/></svg></span>
+                <p><span class="mini-pipeline-num">4</span> Supporting descriptors</p>
+                <span>Refine the prediction</span>
               </div>
-              <div class="glossary-item">
-                <dt>Net charge (pH 7.4)</dt>
-                <dd>Your protein's overall surface charge at physiological pH — estimated with a standard Henderson–Hasselbalch calculation from the sequence, or taken from your own Prot pi value if supplied. This is compared against the cationic threshold (default +5.0) to decide Regime III.</dd>
-              </div>
-              <div class="glossary-item">
-                <dt>Shape anisotropy (κ²)</dt>
-                <dd>A single number from 0 to 1 describing how far your protein departs from a perfect sphere: 0 is perfectly spherical, 1 is a thin rod. Helps you judge whether a large Dmax reflects a genuinely big protein or just an elongated one.</dd>
-              </div>
-            </dl>
+            </div>
+            <p class="mini-pipeline-footer">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5" stroke-linecap="round"/><circle cx="12" cy="7.8" r="0.9" fill="currentColor" stroke="none"/></svg>
+              Net charge and Dmax drive the call; the rest add context.
+            </p>
+          </div>
+        </div>
+
+        <section class="category-section">
+          <p class="section-label">Descriptor categories</p>
+          <div class="category-cards-grid">
+            <div class="category-card">
+              <span class="category-card-icon cat-indigo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 16 16 4l4 4L8 20Z"/><path d="m14 6 4 4M11 9l2 2M8 12l2 2" stroke-linecap="round"/></svg></span>
+              <span><p class="category-card-title">Size &amp; Shape</p><p class="category-card-sub">How big and how shaped</p></span>
+            </div>
+            <div class="category-card">
+              <span class="category-card-icon cat-green"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 4 7.5v9L12 21l8-4.5v-9Z"/></svg></span>
+              <span><p class="category-card-title">Occupancy</p><p class="category-card-sub">How much space is used</p></span>
+            </div>
+            <div class="category-card">
+              <span class="category-card-icon cat-orange"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7Z"/></svg></span>
+              <span><p class="category-card-title">Surface properties</p><p class="category-card-sub">Charge and interactions</p></span>
+            </div>
           </div>
         </section>
+
+        <div class="info-bar">
+          <span class="callout-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5" stroke-linecap="round"/><circle cx="12" cy="7.8" r="0.9" fill="currentColor" stroke="none"/></svg></span>
+          <p>Values are calculated from your protein structure at pH 7.4 unless stated otherwise.</p>
+        </div>
+
+        <div class="descriptor-rows">
+
+          <div class="descriptor-row" id="desc-dmax">
+            <div class="descriptor-row-icon-col">
+              <span class="descriptor-icon-badge badge-indigo"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-dasharray="3 3"><circle cx="12" cy="12" r="9"/></svg></span>
+              <p class="descriptor-row-name">Dmax</p>
+              <span class="star-rating" aria-label="Primary descriptor">★★★★★</span>
+              <span class="tag tag-primary">Primary</span>
+            </div>
+            <div>
+              <p class="col-heading">What is it?</p>
+              <p>The single longest straight-line distance between any two atoms in your protein, in nanometres.</p>
+            </div>
+            <div>
+              <p class="col-heading">Why it matters</p>
+              <p>This is the strictest test of whether your protein can physically fit through the ~8 nm ferritin cavity.</p>
+            </div>
+            <div class="descriptor-rot">
+              <p class="col-heading">Rule of thumb</p>
+              <div class="threshold-bar mini-threshold">
+                <div class="threshold-zone zone-green" style="left:0;width:50%"></div>
+                <div class="threshold-zone zone-yellow" style="left:50%;width:16.7%"></div>
+                <div class="threshold-zone zone-red" style="left:66.7%;width:33.3%"></div>
+                <div class="threshold-marker" style="left:66.7%"></div>
+              </div>
+              <div class="threshold-axis"><span>0</span><span>8 nm</span><span>12+</span></div>
+              <ul class="rule-legend">
+                <li><i class="legend-dot dot-green"></i><strong>&lt; 6 nm</strong> Fits the cavity (Regime I)</li>
+                <li><i class="legend-dot dot-yellow"></i><strong>~ 6–8 nm</strong> Borderline (check flexibility)</li>
+                <li><i class="legend-dot dot-red"></i><strong>&gt; 8 nm</strong> Too large unless flexible</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="descriptor-row" id="desc-lwt">
+            <div class="descriptor-row-icon-col">
+              <span class="descriptor-icon-badge badge-indigo"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 16 16 4l4 4L8 20Z"/><path d="m14 6 4 4M11 9l2 2M8 12l2 2" stroke-linecap="round"/></svg></span>
+              <p class="descriptor-row-name">Length × width × thickness</p>
+              <span class="star-rating dim" aria-label="Supporting descriptor">★★★★☆</span>
+              <span class="tag tag-supporting">Supporting</span>
+            </div>
+            <div>
+              <p class="col-heading">What is it?</p>
+              <p>Your protein's bounding box along its three principal axes (longest to shortest), in nanometres.</p>
+            </div>
+            <div>
+              <p class="col-heading">Why it matters</p>
+              <p>Gives a sense of overall shape beyond Dmax alone. Helps identify elongated (rod-like) or flattened (disc-like) proteins.</p>
+            </div>
+            <div class="descriptor-rot">
+              <p class="col-heading">Rule of thumb</p>
+              <p class="rule-freetext">No strict threshold. Use together with Dmax and shape anisotropy.</p>
+            </div>
+          </div>
+
+          <div class="descriptor-row" id="desc-volratio">
+            <div class="descriptor-row-icon-col">
+              <span class="descriptor-icon-badge badge-green"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.2" fill="currentColor" stroke="none"/></svg></span>
+              <p class="descriptor-row-name">Volume ratio</p>
+              <span class="star-rating dim" aria-label="Supporting descriptor">★★★★☆</span>
+              <span class="tag tag-supporting">Supporting</span>
+            </div>
+            <div>
+              <p class="col-heading">What is it?</p>
+              <p>The fraction of the cavity's internal volume your protein would occupy. The cavity is treated as a 268 nm³ sphere (~8 nm diameter).</p>
+            </div>
+            <div>
+              <p class="col-heading">Why it matters</p>
+              <p>Higher occupancy leaves less free space for water and cage flexibility, which can reduce loading efficiency.</p>
+            </div>
+            <div class="descriptor-rot">
+              <p class="col-heading">Rule of thumb</p>
+              <div class="threshold-bar mini-threshold">
+                <div class="threshold-zone zone-green" style="left:0;width:30%"></div>
+                <div class="threshold-zone zone-yellow" style="left:30%;width:30%"></div>
+                <div class="threshold-zone zone-red" style="left:60%;width:40%"></div>
+                <div class="threshold-marker" style="left:30%"></div>
+              </div>
+              <div class="threshold-axis"><span>0</span><span>0.5</span><span>1.0</span></div>
+              <ul class="rule-legend">
+                <li><i class="legend-dot dot-green"></i><strong>&lt; 0.30</strong> Low occupancy (favourable)</li>
+                <li><i class="legend-dot dot-yellow"></i><strong>0.30–0.60</strong> Moderate</li>
+                <li><i class="legend-dot dot-red"></i><strong>&gt; 0.60</strong> High occupancy (less efficient)</li>
+              </ul>
+            </div>
+            <div class="example-box">
+              <p class="example-title">Example</p>
+              <p>Your protein occupies ~15% of the cavity.</p>
+              <div class="example-bar"><div class="example-bar-fill" style="width:15%"></div></div>
+              <div class="example-bar-axis"><span>0%</span><span>100%</span></div>
+            </div>
+          </div>
+
+          <div class="descriptor-row" id="desc-volume">
+            <div class="descriptor-row-icon-col">
+              <span class="descriptor-icon-badge badge-green"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 4 7.5v9L12 21l8-4.5v-9Z"/></svg></span>
+              <p class="descriptor-row-name">Molecular volume</p>
+              <span class="star-rating dim" aria-label="Supporting descriptor">★★★★☆</span>
+              <span class="tag tag-supporting">Supporting</span>
+            </div>
+            <div>
+              <p class="col-heading">What is it?</p>
+              <p>The physical volume of your protein itself, in nm³, before it's expressed as a fraction of the cavity.</p>
+            </div>
+            <div>
+              <p class="col-heading">Why it matters</p>
+              <p>Used to calculate volume ratio, and to compare cargos of different sizes on a common scale.</p>
+            </div>
+            <div class="descriptor-rot">
+              <p class="col-heading">Rule of thumb</p>
+              <p class="rule-freetext">No fixed threshold. <strong>Compare relative</strong> to the 268 nm³ cavity.</p>
+            </div>
+            <div class="example-box">
+              <p class="example-title">Example</p>
+              <p class="example-big">39 nm³</p>
+              <p class="example-note">≈ 15% of cavity volume</p>
+            </div>
+          </div>
+
+          <div class="descriptor-row" id="desc-charge">
+            <div class="descriptor-row-icon-col">
+              <span class="descriptor-icon-badge badge-orange"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7Z"/></svg></span>
+              <p class="descriptor-row-name">Net charge (pH 7.4)</p>
+              <span class="star-rating" aria-label="Primary descriptor">★★★★★</span>
+              <span class="tag tag-primary">Primary</span>
+            </div>
+            <div>
+              <p class="col-heading">What is it?</p>
+              <p>Your protein's overall surface charge at physiological pH, estimated using the Henderson–Hasselbalch approach.</p>
+            </div>
+            <div>
+              <p class="col-heading">Why it matters</p>
+              <p>Strongly positive proteins are attracted to the negatively charged cage exterior and may assemble off-pathway.</p>
+            </div>
+            <div class="descriptor-rot">
+              <p class="col-heading">Rule of thumb</p>
+              <div class="threshold-bar mini-threshold">
+                <div class="threshold-zone zone-green" style="left:0;width:65%"></div>
+                <div class="threshold-zone zone-yellow" style="left:65%;width:10%"></div>
+                <div class="threshold-zone zone-red" style="left:75%;width:25%"></div>
+                <div class="threshold-marker" style="left:75%"></div>
+              </div>
+              <div class="threshold-axis"><span>-10</span><span>0</span><span>+5</span><span>+10</span></div>
+              <ul class="rule-legend">
+                <li><i class="legend-dot dot-green"></i><strong>&lt; +3</strong> Charge-compatible (Regime I or II)</li>
+                <li><i class="legend-dot dot-yellow"></i><strong>~ +3–5</strong> Near threshold (use caution)</li>
+                <li><i class="legend-dot dot-red"></i><strong>&gt; +5</strong> Likely off-pathway (Regime III)</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="descriptor-row" id="desc-kappa">
+            <div class="descriptor-row-icon-col">
+              <span class="descriptor-icon-badge badge-indigo"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="6" cy="12" r="4"/><rect x="13" y="9" width="9" height="6" rx="3"/></svg></span>
+              <p class="descriptor-row-name">Shape anisotropy (κ²)</p>
+              <span class="star-rating dim" aria-label="Supporting descriptor">★★★☆☆</span>
+              <span class="tag tag-supporting">Supporting</span>
+            </div>
+            <div>
+              <p class="col-heading">What is it?</p>
+              <p>A number from 0 to 1 describing how far your protein departs from a perfect sphere.</p>
+            </div>
+            <div>
+              <p class="col-heading">Why it matters</p>
+              <p>Indicates whether a large Dmax reflects a genuinely big protein (high κ²) or just an elongated shape.</p>
+            </div>
+            <div class="descriptor-rot">
+              <p class="col-heading">Rule of thumb</p>
+              <div class="threshold-bar mini-threshold">
+                <div class="threshold-zone zone-green" style="left:0;width:30%"></div>
+                <div class="threshold-zone zone-yellow" style="left:30%;width:40%"></div>
+                <div class="threshold-zone zone-red" style="left:70%;width:30%"></div>
+                <div class="threshold-marker" style="left:70%"></div>
+              </div>
+              <div class="threshold-axis"><span>0</span><span>0.5</span><span>1</span></div>
+              <ul class="rule-legend">
+                <li><i class="legend-dot dot-green"></i><strong>&lt; 0.3</strong> More spherical</li>
+                <li><i class="legend-dot dot-yellow"></i><strong>0.3–0.7</strong> Moderately anisotropic</li>
+                <li><i class="legend-dot dot-red"></i><strong>&gt; 0.7</strong> Highly elongated (rod-like)</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="callout-info">
+          <span class="callout-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5" stroke-linecap="round"/><circle cx="12" cy="7.8" r="0.9" fill="currentColor" stroke="none"/></svg></span>
+          <p><strong>Remember:</strong> These descriptors are calculated from your protein structure and used together to make a prediction. They are not direct measurements and should be interpreted as guides, not absolute rules.</p>
+        </div>
       </div>
 
       <div class="about-section hidden" id="section-methods">
         <p class="doc-breadcrumb">Documentation <span class="sep">›</span> <span class="current">Methods</span></p>
-        <h1 class="page-title">Methods</h1>
-        <p class="page-lede">How are the calculations performed?</p>
 
-        <section class="card">
-          <div class="card-header"><h2>Geometry, from a single PDB file</h2></div>
-          <div class="card-body prose">
-            <p>
-              enCAGE reads the heavy atoms (hydrogens excluded) from your structure using
-              Biopython. The coordinates are centred on their centroid and rotated onto their own
-              principal axes — via principal component analysis of the coordinate covariance
-              matrix — which puts the protein's natural long, medium, and short axes into a
-              consistent frame regardless of how the original structure happened to be oriented
-              in the PDB file.
+        <div class="page-header-grid">
+          <div>
+            <h1 class="page-title">Methods</h1>
+            <p class="page-lede">How are the calculations performed?</p>
+            <p class="page-intro">
+              enCAGE turns a single protein structure into six descriptors. These values follow
+              a fixed hierarchy to assign one of the assembly regimes.
             </p>
-            <ul class="method-list">
-              <li><strong>Length × width × thickness</strong> are the extents along these three principal axes.</li>
-              <li><strong>Dmax</strong> is the largest pairwise distance between any two heavy atoms, computed directly (very large structures are randomly subsampled for speed).</li>
-              <li><strong>Shape anisotropy (κ²)</strong> comes from the same principal-axis analysis, using the standard relative-shape-anisotropy formula — independent of overall size.</li>
-            </ul>
+            <button class="link-chevron" type="button" data-section="results">
+              See the regime decision logic
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m9 6 6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+          <div class="mini-pipeline-card">
+            <p class="mini-pipeline-title">At a glance: how predictions are made</p>
+            <div class="mini-pipeline-row">
+              <div class="mini-pipeline-step">
+                <span class="mini-pipeline-icon mp-blue"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7Z"/></svg></span>
+                <p><span class="mini-pipeline-num">1</span> Net charge</p>
+                <span>Checked first (electrostatics dominate)</span>
+              </div>
+              <span class="mini-pipeline-arrow" aria-hidden="true">→</span>
+              <div class="mini-pipeline-step">
+                <span class="mini-pipeline-icon mp-indigo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-dasharray="3 3"><circle cx="12" cy="12" r="9"/></svg></span>
+                <p><span class="mini-pipeline-num">2</span> Dmax</p>
+                <span>Steric fit within ~8 nm cavity</span>
+              </div>
+              <span class="mini-pipeline-arrow" aria-hidden="true">→</span>
+              <div class="mini-pipeline-step">
+                <span class="mini-pipeline-icon mp-green"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 18c3-3 3-6 0-9M8 20c3.5-4 3.5-9 0-16M12 18c3-3 3-6 0-9"/></svg></span>
+                <p><span class="mini-pipeline-num">3</span> Flexibility</p>
+                <span>Helps oversized proteins adapt</span>
+              </div>
+              <span class="mini-pipeline-arrow" aria-hidden="true">→</span>
+              <div class="mini-pipeline-step">
+                <span class="mini-pipeline-icon mp-indigo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5" stroke-linecap="round"/></svg></span>
+                <p><span class="mini-pipeline-num">4</span> Outcome</p>
+                <span>One of three regimes or no encapsulation</span>
+              </div>
+            </div>
+            <p class="mini-pipeline-footer">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5" stroke-linecap="round"/><circle cx="12" cy="7.8" r="0.9" fill="currentColor" stroke="none"/></svg>
+              Thresholds are adjustable in the tool. See limits below.
+            </p>
+          </div>
+        </div>
+
+        <section class="category-section">
+          <p class="section-label">The six descriptors</p>
+          <p class="regime-section-lede">Each descriptor captures a different aspect of your protein. Select a card to jump to its details.</p>
+          <div class="descriptor-summary-grid">
+            <a class="descriptor-summary-card" href="#method-dmax">
+              <span class="descriptor-icon-badge badge-indigo small"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-dasharray="3 3"><circle cx="12" cy="12" r="9"/></svg></span>
+              <span class="descriptor-summary-num">1</span>
+              <p class="descriptor-summary-title">Dmax</p>
+              <p class="descriptor-summary-desc">Longest straight-line distance across the protein (nm).</p>
+              <span class="tag tag-supporting">Size &amp; Shape</span>
+            </a>
+            <a class="descriptor-summary-card" href="#method-lwt">
+              <span class="descriptor-icon-badge badge-indigo small"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 16 16 4l4 4L8 20Z"/><path d="m14 6 4 4M11 9l2 2M8 12l2 2" stroke-linecap="round"/></svg></span>
+              <span class="descriptor-summary-num">2</span>
+              <p class="descriptor-summary-title">Length × width × thickness</p>
+              <p class="descriptor-summary-desc">Overall dimensions along the protein's principal axes (nm).</p>
+              <span class="tag tag-supporting">Size &amp; Shape</span>
+            </a>
+            <a class="descriptor-summary-card" href="#method-volratio">
+              <span class="descriptor-icon-badge badge-green small"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.2" fill="currentColor" stroke="none"/></svg></span>
+              <span class="descriptor-summary-num">3</span>
+              <p class="descriptor-summary-title">Volume ratio</p>
+              <p class="descriptor-summary-desc">Fraction of the 268 nm³ ferritin cavity occupied by the protein.</p>
+              <span class="tag tag-supporting">Occupancy</span>
+            </a>
+            <a class="descriptor-summary-card" href="#method-volume">
+              <span class="descriptor-icon-badge badge-green small"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 4 7.5v9L12 21l8-4.5v-9Z"/></svg></span>
+              <span class="descriptor-summary-num">4</span>
+              <p class="descriptor-summary-title">Molecular volume</p>
+              <p class="descriptor-summary-desc">Estimated physical volume of the protein (nm³).</p>
+              <span class="tag tag-supporting">Occupancy</span>
+            </a>
+            <a class="descriptor-summary-card" href="#method-charge">
+              <span class="descriptor-icon-badge badge-orange small"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7Z"/></svg></span>
+              <span class="descriptor-summary-num">5</span>
+              <p class="descriptor-summary-title">Net charge (pH 7.4)</p>
+              <p class="descriptor-summary-desc">Overall surface charge at physiological pH (Henderson–Hasselbalch).</p>
+              <span class="tag tag-primary">Surface properties</span>
+            </a>
+            <a class="descriptor-summary-card" href="#method-kappa">
+              <span class="descriptor-icon-badge badge-indigo small"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="6" cy="12" r="4"/><rect x="13" y="9" width="9" height="6" rx="3"/></svg></span>
+              <span class="descriptor-summary-num">6</span>
+              <p class="descriptor-summary-title">Shape anisotropy (κ²)</p>
+              <p class="descriptor-summary-desc">How elongated the protein is (0 = sphere, 1 = rod).</p>
+              <span class="tag tag-supporting">Size &amp; Shape</span>
+            </a>
           </div>
         </section>
 
-        <section class="card">
-          <div class="card-header"><h2>Molecular volume</h2></div>
-          <div class="card-body prose">
-            <p>
-              By default, volume is estimated with a fast, dependency-free grid-based
-              approximation: a 3D grid is laid over the structure, and any grid point falling
-              within an atom's van der Waals radius counts as occupied. This is quick to compute
-              but underestimates the true solvent-excluded volume, since it doesn't roll a
-              solvent probe over the surface the way ChimeraX does. If you supply a ChimeraX
-              solvent-excluded surface volume (probe radius 1.4 Å) under manual overrides, that
-              value is used verbatim instead, matching the numbers in the manuscript.
-            </p>
-            <p>
-              The volume ratio compares this to a fixed 268 nm³ reference cavity (a sphere ~8 nm
-              across) — the estimated internal volume of the equine apoferritin lumen.
-            </p>
+        <section class="category-section">
+          <p class="section-label">How each descriptor is calculated</p>
+          <div class="descriptor-rows">
+
+            <div class="descriptor-row method-row" id="method-dmax">
+              <div class="descriptor-row-icon-col">
+                <span class="descriptor-icon-badge badge-indigo"><span class="descriptor-summary-num standalone">1</span></span>
+                <p class="descriptor-row-name">Dmax</p>
+              </div>
+              <div>
+                <p>The largest pairwise distance between any two heavy atoms in the structure, computed directly.</p>
+                <details class="learn-more"><summary>Learn more</summary><p>Very large structures (&gt;6,000 heavy atoms) are randomly subsampled for speed, with a fixed seed so results stay reproducible.</p></details>
+              </div>
+              <div>
+                <p class="col-heading">Why it matters</p>
+                <p>This is the strictest test of whether your protein can physically fit inside the ~8 nm ferritin cavity.</p>
+              </div>
+            </div>
+
+            <div class="descriptor-row method-row" id="method-lwt">
+              <div class="descriptor-row-icon-col">
+                <span class="descriptor-icon-badge badge-indigo"><span class="descriptor-summary-num standalone">2</span></span>
+                <p class="descriptor-row-name">Length × width × thickness</p>
+              </div>
+              <div>
+                <p>The protein is rotated onto its principal axes (via PCA on the coordinate covariance matrix). The extents along these axes define length (L), width (W) and thickness (T).</p>
+              </div>
+              <div>
+                <p class="col-heading">Why it matters</p>
+                <p>Gives a sense of overall shape beyond Dmax, and helps identify elongated (rod-like) or flattened (disc-like) proteins.</p>
+              </div>
+            </div>
+
+            <div class="descriptor-row method-row" id="method-volratio">
+              <div class="descriptor-row-icon-col">
+                <span class="descriptor-icon-badge badge-green"><span class="descriptor-summary-num standalone">3</span></span>
+                <p class="descriptor-row-name">Volume ratio</p>
+              </div>
+              <div>
+                <p>Protein volume divided by the internal volume of the ferritin cavity (268 nm³, a sphere ~8 nm in diameter).</p>
+              </div>
+              <div>
+                <p class="col-heading">Why it matters</p>
+                <p>Higher occupancy leaves less free space for water and cage flexibility, which can reduce loading efficiency.</p>
+              </div>
+              <div class="example-box">
+                <p class="example-title">Example</p>
+                <p>Your protein occupies ~15%</p>
+                <div class="example-bar"><div class="example-bar-fill" style="width:15%"></div></div>
+                <div class="example-bar-axis"><span>0%</span><span>100%</span></div>
+              </div>
+            </div>
+
+            <div class="descriptor-row method-row" id="method-volume">
+              <div class="descriptor-row-icon-col">
+                <span class="descriptor-icon-badge badge-green"><span class="descriptor-summary-num standalone">4</span></span>
+                <p class="descriptor-row-name">Molecular volume</p>
+              </div>
+              <div>
+                <p>Estimated physical volume of the protein, in nm³, before any scaling.</p>
+                <details class="learn-more"><summary>Learn more</summary><p>By default this is a fast grid-based van der Waals union approximation (0.9 Å spacing), which underestimates the true solvent-excluded volume since no probe is rolled over the surface. A ChimeraX solvent-excluded volume can be supplied under Advanced options instead.</p></details>
+              </div>
+              <div>
+                <p class="col-heading">Why it matters</p>
+                <p>Used to compute volume ratio, and to compare cargos of different sizes.</p>
+              </div>
+              <div class="example-box">
+                <p class="example-title">Example</p>
+                <p class="example-big">39 nm³</p>
+                <p class="example-note">≈ 15% of cavity volume</p>
+              </div>
+            </div>
+
+            <div class="descriptor-row method-row" id="method-charge">
+              <div class="descriptor-row-icon-col">
+                <span class="descriptor-icon-badge badge-orange"><span class="descriptor-summary-num standalone">5</span></span>
+                <p class="descriptor-row-name">Net charge (pH 7.4)</p>
+              </div>
+              <div>
+                <p>Calculated using the Henderson–Hasselbalch equation, summing the fractional charge on ionisable residues at pH 7.4.</p>
+                <details class="learn-more"><summary>Learn more</summary><p>Ionisable groups: N-/C-termini, Lys, Arg, His, Asp, Glu, Cys, Tyr, using a standard EMBOSS pKa set. Ignores local electrostatic environment and structural burial — supply a Prot pi value under Advanced options for a more rigorous estimate.</p></details>
+              </div>
+              <div>
+                <p class="col-heading">Why it matters</p>
+                <p>Strongly positive proteins tend to bind ferritin subunits and assemble via an off-pathway route (Regime III).</p>
+              </div>
+              <div class="descriptor-rot">
+                <div class="threshold-bar mini-threshold">
+                  <div class="threshold-zone zone-green" style="left:0;width:65%"></div>
+                  <div class="threshold-zone zone-yellow" style="left:65%;width:10%"></div>
+                  <div class="threshold-zone zone-red" style="left:75%;width:25%"></div>
+                  <div class="threshold-marker" style="left:75%"></div>
+                </div>
+                <div class="threshold-axis"><span>-10</span><span>0</span><span>+10</span></div>
+                <p class="example-note center">Cationic threshold: +5.0</p>
+              </div>
+            </div>
+
+            <div class="descriptor-row method-row" id="method-kappa">
+              <div class="descriptor-row-icon-col">
+                <span class="descriptor-icon-badge badge-indigo"><span class="descriptor-summary-num standalone">6</span></span>
+                <p class="descriptor-row-name">Shape anisotropy (κ²)</p>
+              </div>
+              <div>
+                <p>Calculated from the same principal axes using the standard relative-shape-anisotropy formula (independent of overall size).</p>
+              </div>
+              <div>
+                <p class="col-heading">Why it matters</p>
+                <p>Helps judge whether a large Dmax reflects genuine bulk (high κ²) or an elongated shape that might still adapt.</p>
+              </div>
+              <div class="descriptor-rot">
+                <div class="threshold-bar mini-threshold">
+                  <div class="threshold-marker" style="left:16%"></div>
+                </div>
+                <div class="threshold-axis"><span>0 = sphere</span><span>1 = rod</span></div>
+              </div>
+            </div>
+
           </div>
         </section>
 
-        <section class="card">
-          <div class="card-header"><h2>Net surface charge</h2></div>
-          <div class="card-body prose">
-            <p>
-              By default, net charge is estimated with a standard Henderson–Hasselbalch
-              calculation from the protein's sequence, summing the fractional charge on the N-
-              and C-termini and every ionisable side chain (Lys, Arg, His, Asp, Glu, Cys, Tyr) at
-              the specified pH, using a standard set of pKa values. This is a simplification — it
-              ignores local electrostatic environment and structural burial — so if you have a
-              more rigorous value (e.g. from Prot pi), supplying it under manual overrides will
-              be used instead.
-            </p>
-          </div>
-        </section>
+        <div class="closing-two-col">
+          <section class="card">
+            <div class="card-header"><h2>The regime decision, and its limits</h2></div>
+            <div class="card-body prose">
+              <p>
+                The descriptors feed into a fixed hierarchy: net charge is evaluated first, because
+                a strongly cationic surface can override everything else and divert the cargo into
+                off-pathway assembly (Regime III). Charge-compatible cargos are then sorted by Dmax
+                against the ~8 nm cavity diameter into Regime I (fits) or, if oversized, resolved on
+                structural organisation: multidomain or conformationally flexible cargos are
+                assigned Regime II, while single-domain rigid cargos are reported as predicted
+                non-encapsulating.
+              </p>
+              <p>
+                These thresholds — the default pH of 7.4 and the +5.0 cationic cutoff — are
+                calibrated on a small in-house cargo panel (equine apoferritin, pH cycling) and are
+                exposed as adjustable parameters in the tool rather than hard-coded.
+              </p>
+              <button class="link-chevron" type="button" data-section="examples">
+                View examples and sensitivity
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m9 6 6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+          </section>
 
-        <section class="card">
-          <div class="card-header"><h2>The regime decision, and its limits</h2></div>
-          <div class="card-body prose">
-            <p>
-              The three descriptors feed into a fixed hierarchy: net charge is evaluated first,
-              because a strongly cationic surface can override everything else and divert the
-              cargo into off-pathway assembly (Regime III). Charge-compatible cargos are then
-              sorted by Dmax against the ~8 nm cavity diameter into Regime I (fits) or, if
-              oversized, resolved on structural organisation: multidomain or conformationally
-              flexible cargos are assigned Regime II, while single-domain rigid cargos are
-              reported as predicted non-encapsulating — an outcome outside Regimes I–III that
-              follows from the framework and has not been tested experimentally.
-            </p>
-            <p>
-              These thresholds — the default pH of 7.4 and the +5.0 cationic cutoff — are
-              calibrated on a small in-house cargo panel (equine apoferritin, pH cycling)
-              described in the accompanying manuscript, and are exposed as adjustable parameters
-              in the tool rather than hard-coded. enCAGE is a heuristic design aid, not a
-              validated classifier: treat Regime II calls especially as "worth testing", not
-              certainty, treat a no-encapsulation call as an untested prediction rather than a
-              hard exclusion, and expect the quantitative thresholds to need re-tuning for
-              ferritin systems that assemble by a different mechanism — see Examples.
-            </p>
-          </div>
-        </section>
+          <section class="card important-card">
+            <div class="card-header"><h2>Important things to know</h2></div>
+            <div class="card-body">
+              <ul class="important-list">
+                <li>
+                  <span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 5 7v10l7 4 7-4V7Z"/></svg></span>
+                  <div><p class="important-title">Heuristic, not a classifier</p><p>enCAGE is a design aid. Treat Regime II as "worth testing" and no-encapsulation calls as untested predictions, not hard exclusions.</p></div>
+                </li>
+                <li>
+                  <span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3c3 4 6 7.5 6 11a6 6 0 0 1-12 0c0-3.5 3-7 6-11Z"/></svg></span>
+                  <div><p class="important-title">Structure-dependent</p><p>Results are based on a single static structure. Flexibility cannot be measured directly — provide biological context when possible.</p></div>
+                </li>
+                <li>
+                  <span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 4 7.5v9L12 21l8-4.5v-9Z"/></svg></span>
+                  <div><p class="important-title">System-specific</p><p>Thresholds are calibrated on one ferritin system. Re-tuning may be needed for other cages or assembly mechanisms.</p></div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </div>
+
+        <div class="callout-info">
+          <span class="callout-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5" stroke-linecap="round"/><circle cx="12" cy="7.8" r="0.9" fill="currentColor" stroke="none"/></svg></span>
+          <p>For full methodological details, assumptions and formulas, see the accompanying manuscript.</p>
+        </div>
       </div>
 
       <div class="about-section hidden" id="section-examples">
         <p class="doc-breadcrumb">Documentation <span class="sep">›</span> <span class="current">Examples</span></p>
-        <h1 class="page-title">Examples</h1>
-        <p class="page-lede">What does enCAGE predict for known proteins?</p>
 
-        <section class="card">
-          <div class="card-header"><h2>Try the in-house cargo panel</h2></div>
-          <div class="card-body prose">
-            <p>
-              The three proteins used to calibrate enCAGE are built into the homepage as
-              one-click examples — each fetches the structure live from RCSB and runs the full
-              analysis.
+        <div class="page-header-grid">
+          <div>
+            <h1 class="page-title">Examples</h1>
+            <p class="page-lede">See how enCAGE performs on known proteins.</p>
+            <p class="page-intro">
+              Run curated examples from our in-house panel or explore results from published
+              cargo–ferritin systems.
             </p>
-            <div class="example-list">
-              <a class="example-item" href="{{ url_for('index') }}">
-                <span class="example-meta">
-                  <span class="example-name">α-Chymotrypsin</span>
-                  <span class="example-pdb">PDB 4CHA — compact, near-neutral charge</span>
-                </span>
-                <span class="example-regime-chip regime-1">Regime I</span>
-              </a>
-              <a class="example-item" href="{{ url_for('index') }}">
-                <span class="example-meta">
-                  <span class="example-name">Human serum albumin</span>
-                  <span class="example-pdb">PDB 1AO6 — oversized, multidomain</span>
-                </span>
-                <span class="example-regime-chip regime-2">Regime II</span>
-              </a>
-              <a class="example-item" href="{{ url_for('index') }}">
-                <span class="example-meta">
-                  <span class="example-name">Lysozyme</span>
-                  <span class="example-pdb">PDB 1LYZ — strongly cationic</span>
-                </span>
-                <span class="example-regime-chip regime-3">Regime III</span>
+          </div>
+          <div class="mini-pipeline-card">
+            <p class="mini-pipeline-title">At a glance</p>
+            <div class="glance-stats-row">
+              <div class="glance-stat">
+                <span class="glance-stat-icon gs-indigo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 4 7.5v9L12 21l8-4.5v-9Z"/></svg></span>
+                <p class="glance-stat-num">3</p>
+                <span>in-house examples</span>
+              </div>
+              <div class="glance-stat">
+                <span class="glance-stat-icon gs-green"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5c3-1.5 6-1.5 8 0v14c-2-1.5-5-1.5-8 0Z"/><path d="M20 5c-3-1.5-6-1.5-8 0v14c2-1.5 5-1.5 8 0Z"/></svg></span>
+                <p class="glance-stat-num">5</p>
+                <span>literature examples</span>
+              </div>
+              <div class="glance-stat">
+                <span class="glance-stat-icon gs-blue"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="8" cy="9" r="3.2"/><circle cx="17" cy="9" r="3.2"/><circle cx="12.5" cy="17" r="3.2"/></svg></span>
+                <p class="glance-stat-num">3</p>
+                <span>ferritin systems</span>
+              </div>
+              <div class="glance-stat">
+                <span class="glance-stat-icon gs-orange"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 13h4l2-6 4 12 2-9 2 3h4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                <p class="glance-stat-num">6</p>
+                <span>descriptors</span>
+              </div>
+              <div class="glance-stat">
+                <span class="glance-stat-icon gs-indigo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="2.2" fill="currentColor" stroke="none"/></svg></span>
+                <p class="glance-stat-num">1</p>
+                <span>prediction framework</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <section class="category-section">
+          <div class="examples-section-head">
+            <p class="section-label">1. Try an example</p>
+            <a class="link-chevron" href="{{ url_for('index') }}" target="_blank" rel="noopener">
+              Open in the tool
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M7 17 17 7M8 7h9v9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+          </div>
+          <p class="regime-section-lede">Explore the three proteins used to calibrate enCAGE.</p>
+
+          <div class="example-cards-grid">
+            <div class="example-run-card card-1">
+              <div class="cage-icon">
+                <svg width="72" height="72" viewBox="0 0 100 100" fill="none">
+                  <circle cx="50" cy="50" r="34" stroke="var(--border)" stroke-width="3" stroke-dasharray="5 5"/>
+                  <circle cx="50" cy="50" r="14" fill="var(--regime1)" opacity="0.85"/>
+                  <circle cx="43" cy="45" r="4" fill="var(--regime1-bg)"/>
+                  <circle cx="58" cy="55" r="3" fill="var(--regime1-bg)"/>
+                </svg>
+              </div>
+              <p class="example-run-name outcome-1">α-Chymotrypsin</p>
+              <span class="label-1 chip">Regime I</span>
+              <p class="example-run-pdb">PDB 4CHA</p>
+              <ul class="example-run-list">
+                <li>Compact enzyme</li>
+                <li>Near-neutral charge</li>
+                <li>Small enough to fit</li>
+              </ul>
+              <p class="example-run-charge outcome-1">Net charge (pH 7.4): +4.9</p>
+              <a class="btn-run-example run-1" href="{{ url_for('index') }}?example=4CHA">
+                Run this example
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </a>
             </div>
-            <p class="hint">Look for "Try an example protein" in the input panel on the homepage.</p>
+
+            <div class="example-run-card card-2">
+              <div class="cage-icon">
+                <svg width="72" height="72" viewBox="0 0 100 100" fill="none">
+                  <circle cx="50" cy="50" r="34" stroke="var(--border)" stroke-width="3" stroke-dasharray="5 5"/>
+                  <path d="M35 35c8 4 8 10 0 15s-8 11 0 15" stroke="var(--regime2)" stroke-width="6" stroke-linecap="round" fill="none"/>
+                  <path d="M58 33c8 5 8 10 0 15s-8 11 0 17" stroke="var(--regime2)" stroke-width="6" stroke-linecap="round" fill="none" opacity="0.6"/>
+                </svg>
+              </div>
+              <p class="example-run-name outcome-2">Human serum albumin</p>
+              <span class="label-2 chip">Regime II</span>
+              <p class="example-run-pdb">PDB 1AO6</p>
+              <ul class="example-run-list">
+                <li>Large, multidomain</li>
+                <li>Oversized for cavity</li>
+                <li>Likely flexible</li>
+              </ul>
+              <p class="example-run-charge outcome-2">Net charge (pH 7.4): −15.1</p>
+              <a class="btn-run-example run-2" href="{{ url_for('index') }}?example=1AO6">
+                Run this example
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </a>
+            </div>
+
+            <div class="example-run-card card-3">
+              <div class="cage-icon">
+                <svg width="72" height="72" viewBox="0 0 100 100" fill="none">
+                  <circle cx="50" cy="50" r="34" stroke="var(--border)" stroke-width="3" stroke-dasharray="5 5"/>
+                  <path d="M20 42c8 4 8 10 0 15s-8 11 0 15" stroke="var(--regime3)" stroke-width="6" stroke-linecap="round" fill="none"/>
+                  <path d="M74 38c8 5 8 10 0 15s-8 11 0 17" stroke="var(--regime3)" stroke-width="6" stroke-linecap="round" fill="none" opacity="0.7"/>
+                </svg>
+              </div>
+              <p class="example-run-name outcome-3">Lysozyme</p>
+              <span class="label-3 chip">Regime III</span>
+              <p class="example-run-pdb">PDB 1LYZ</p>
+              <ul class="example-run-list">
+                <li>Small, single domain</li>
+                <li>Strongly cationic</li>
+                <li>Drives off-pathway assembly</li>
+              </ul>
+              <p class="example-run-charge outcome-3">Net charge (pH 7.4): +8.7</p>
+              <a class="btn-run-example run-3" href="{{ url_for('index') }}?example=1LYZ">
+                Run this example
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </a>
+            </div>
           </div>
         </section>
 
-        <section class="card">
-          <div class="card-header"><h2>External validation from the literature</h2></div>
-          <div class="card-body prose">
-            <p>
-              The same three descriptors were also applied retrospectively to independently
-              published cargo–ferritin systems. Steric compatibility (cavity occupancy) held up
-              cleanly across every system. Electrostatics is more nuanced: it remains the key
-              determinant of outcome everywhere, but the direction and threshold are specific to
-              how a given cage assembles — equine apoferritin reforms passively and is disrupted
-              by very cationic cargo, whereas AfFtn actively co-assembles around cationic cargo,
-              so equine-calibrated regime labels don't transfer directly to it (see footnotes).
-            </p>
-            <div class="validation-table-wrap">
-              <table class="validation-table">
-                <thead>
-                  <tr><th>Cargo</th><th>Cage</th><th>Net charge<br/>(pH 7.4)</th><th>Reported outcome</th><th>Equine-rule regime</th></tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Cytochrome c1 (chimeric)</td><td>AfFtn</td><td>+8.4</td><td>Encapsulated</td>
-                    <td><span class="example-regime-chip regime-3">III<sup>a</sup></span></td>
-                  </tr>
-                  <tr>
-                    <td>GFP (+36, supercharged)</td><td>AfFtn</td><td>+36</td><td>Encapsulated</td>
-                    <td><span class="example-regime-chip regime-3">III<sup>a</sup></span></td>
-                  </tr>
-                  <tr>
-                    <td>GFP</td><td>AfFtn</td><td>−7.6</td><td>Not encapsulated</td>
-                    <td><span class="example-regime-chip regime-1">I<sup>a</sup></span></td>
-                  </tr>
-                  <tr>
-                    <td>GFP (−30, supercharged)</td><td>AfFtn</td><td>−30</td><td>Not encapsulated</td>
-                    <td><span class="example-regime-chip regime-1">I<sup>a</sup></span></td>
-                  </tr>
-                  <tr>
-                    <td>[3Fe–4S] ferredoxin</td><td><em>E. coli</em> Bfr</td><td>−8.1</td><td>Encapsulated (4–6 per cage)</td>
-                    <td><span class="example-regime-chip regime-1">I<sup>b</sup></span></td>
-                  </tr>
-                </tbody>
-              </table>
+        <section class="category-section">
+          <p class="section-label">2. External validation from the literature</p>
+          <p class="regime-section-lede">We applied the same three descriptors to independently published cargo–ferritin systems.</p>
+
+          <div class="validation-insight-grid">
+            <div class="validation-insight">
+              <span class="insight-icon insight-good"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m5 13 4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <p class="insight-title insight-title-good">Steric compatibility transfers well</p>
+              <p>Cavity occupancy (volume ratio) predicts fit consistently across ferritin systems.</p>
             </div>
-            <p class="footnote"><sup>a</sup> AfFtn assembles by co-forming around a sufficiently cationic cargo — the opposite mechanism to equine apoferritin's passive pH-cycling. So a cationic cargo flagged as off-pathway (Regime III) by the equine-calibrated rule can encapsulate cleanly in AfFtn, while a cargo that looks charge-compatible (Regime I) by the same rule can fail to encapsulate if it isn't cationic enough to trigger AfFtn's assembly.</p>
-            <p class="footnote"><sup>b</sup> This acidic cargo is anchored by a cage-specific hydrophobic pocket in Bfr, not by electrostatic complementarity — a reminder that steric fit alone doesn't guarantee the driving mechanism is charge-based.</p>
+            <div class="validation-insight">
+              <span class="insight-icon insight-warn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2 2 20h20Z" stroke-linejoin="round"/><path d="M12 9v4.5" stroke-linecap="round"/><circle cx="12" cy="16.5" r="1" fill="currentColor" stroke="none"/></svg></span>
+              <p class="insight-title insight-title-warn">Electrostatic thresholds are system-specific</p>
+              <p>Charge remains the key determinant, but the direction and cutoff depend on how the cage assembles.</p>
+              <div class="mini-system-bar">
+                <div class="mini-system-line"></div>
+                <div class="mini-system-dot" style="left:8%"></div>
+                <div class="mini-system-dot" style="left:50%"></div>
+                <div class="mini-system-dot" style="left:92%"></div>
+              </div>
+              <div class="mini-system-labels"><span>Bfr</span><span>Equine ApoFt</span><span>AfFtn</span></div>
+            </div>
+            <div class="validation-insight">
+              <span class="insight-icon insight-info"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 2v6L4 19a2 2 0 0 0 1.8 3h12.4A2 2 0 0 0 20 19l-5-11V2"/><path d="M9 2h6"/><circle cx="12" cy="16" r="1.2" fill="currentColor" stroke="none"/><circle cx="9.3" cy="18.4" r="0.9" fill="currentColor" stroke="none"/></svg></span>
+              <p class="insight-title insight-title-info">Descriptors remain informative; labels may not transfer</p>
+              <p>Equine-calibrated regime labels don't always map directly onto other ferritin systems.</p>
+            </div>
+          </div>
+
+          <div class="validation-lower-grid">
+            <div class="validation-table-card">
+              <p class="section-label">Published examples</p>
+              <div class="validation-table-wrap">
+                <table class="validation-table">
+                  <thead>
+                    <tr><th>Cargo</th><th>Cage</th><th>Net charge<br/>(pH 7.4)</th><th>Reported outcome</th><th>Equine-rule regime</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Cytochrome c1 (chimeric)</td><td>AfFtn</td><td>+8.4</td><td>Encapsulated</td>
+                      <td><span class="example-regime-chip regime-3">III<sup>a</sup></span></td>
+                    </tr>
+                    <tr>
+                      <td>GFP (+36, supercharged)</td><td>AfFtn</td><td>+36</td><td>Encapsulated</td>
+                      <td><span class="example-regime-chip regime-3">III<sup>a</sup></span></td>
+                    </tr>
+                    <tr>
+                      <td>GFP</td><td>AfFtn</td><td>−7.6</td><td>Not encapsulated</td>
+                      <td><span class="example-regime-chip regime-1">I<sup>a</sup></span></td>
+                    </tr>
+                    <tr>
+                      <td>GFP (−30, supercharged)</td><td>AfFtn</td><td>−30</td><td>Not encapsulated</td>
+                      <td><span class="example-regime-chip regime-1">I<sup>a</sup></span></td>
+                    </tr>
+                    <tr>
+                      <td>[3Fe–4S] ferredoxin</td><td><em>E. coli</em> Bfr</td><td>−8.1</td><td>Encapsulated (4–6 per cage)</td>
+                      <td><span class="example-regime-chip regime-1">I<sup>b</sup></span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <p class="footnote"><sup>a</sup> AfFtn assembles by co-forming around a sufficiently cationic cargo — the opposite mechanism to equine apoferritin's passive pH-cycling. So a cationic cargo flagged as off-pathway (Regime III) by the equine-calibrated rule can encapsulate cleanly in AfFtn, while a cargo that looks charge-compatible (Regime I) by the same rule can fail to encapsulate if it isn't cationic enough to trigger AfFtn's assembly.</p>
+              <p class="footnote"><sup>b</sup> This acidic cargo is anchored by a cage-specific hydrophobic pocket in Bfr, not by electrostatic complementarity — a reminder that steric fit alone doesn't guarantee the driving mechanism is charge-based.</p>
+            </div>
+
+            <div class="scatter-card">
+              <p class="section-label">Visual summary</p>
+              <p class="scatter-title">Charge vs. outcome<br>(across systems)</p>
+              <div class="scatter-chart">
+                <div class="scatter-axis-y">
+                  <span>+40</span><span>+20</span><span>+5</span><span>0</span><span>−10</span><span>−30</span><span>−40</span>
+                </div>
+                <div class="scatter-plot-col">
+                  <div class="scatter-plot">
+                    <div class="scatter-cutoff-line" style="top:47%"><span>Approx. equine<br>+5 cutoff</span></div>
+                    <div class="scatter-point enc" style="left:75%; top:10.6%" title="GFP (+36), AfFtn"><span class="scatter-label">GFP (+36)<br>(AfFtn)</span></div>
+                    <div class="scatter-point enc" style="left:75%; top:43.1%" title="Cytochrome c1, AfFtn"><span class="scatter-label">Cytochrome c1<br>(AfFtn)</span></div>
+                    <div class="scatter-point enc" style="left:75%; top:62.5%" title="Ferredoxin, Bfr"><span class="scatter-label">Ferredoxin<br>(Bfr)</span></div>
+                    <div class="scatter-point not" style="left:25%; top:61.9%" title="GFP, AfFtn"><span class="scatter-label">GFP<br>(AfFtn)</span></div>
+                    <div class="scatter-point not" style="left:25%; top:88.2%" title="GFP (−30), AfFtn"><span class="scatter-label">GFP (−30)<br>(AfFtn)</span></div>
+                  </div>
+                  <div class="scatter-axis-x"><span>Not encapsulated</span><span>Encapsulated</span></div>
+                </div>
+              </div>
+              <div class="scatter-legend">
+                <span><i class="legend-dot dot-green"></i>Encapsulated</span>
+                <span><i class="legend-dot dot-red"></i>Not encapsulated</span>
+              </div>
+            </div>
           </div>
         </section>
+
+        <section class="category-section">
+          <p class="section-label">3. Key takeaways</p>
+          <div class="takeaway-grid">
+            <div class="takeaway-card">
+              <span class="takeaway-icon ta-green"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="2.2" fill="currentColor" stroke="none"/></svg></span>
+              <p class="takeaway-title ta-title-green">Regime I reproduces</p>
+              <p>Compact, charge-compatible proteins encapsulate across systems.</p>
+            </div>
+            <div class="takeaway-card">
+              <span class="takeaway-icon ta-orange"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 13h4l2-6 4 12 2-9 2 3h4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <p class="takeaway-title ta-title-orange">Regime II remains useful</p>
+              <p>Oversized, flexible proteins are often accommodated — worth testing experimentally.</p>
+            </div>
+            <div class="takeaway-card">
+              <span class="takeaway-icon ta-red"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7Z"/></svg></span>
+              <p class="takeaway-title ta-title-red">Charge rules vary</p>
+              <p>Thresholds and even the direction of electrostatic preference are cage-dependent.</p>
+            </div>
+            <div class="takeaway-card">
+              <span class="takeaway-icon ta-indigo"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 2v6L4 19a2 2 0 0 0 1.8 3h12.4A2 2 0 0 0 20 19l-5-11V2"/><path d="M9 2h6"/></svg></span>
+              <p class="takeaway-title ta-title-indigo">Validation is essential</p>
+              <p>enCAGE is a heuristic design aid. Always confirm predictions experimentally.</p>
+            </div>
+          </div>
+        </section>
+
+        <div class="callout-info examples-closing">
+          <span class="callout-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5" stroke-linecap="round"/><circle cx="12" cy="7.8" r="0.9" fill="currentColor" stroke="none"/></svg></span>
+          <p>These examples demonstrate how the same descriptors behave across different cargo–ferritin systems. Results may vary for other cages or assembly mechanisms — thresholds are adjustable in the tool.</p>
+          <button class="btn-citation examples-closing-btn" type="button" data-section="methods">
+            About the methods
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M7 17 17 7M8 7h9v9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
       </div>
     </section>
 

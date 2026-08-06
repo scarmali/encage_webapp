@@ -50,7 +50,7 @@
     </p>
     <p class="hero-pill">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 2v6L4 19a2 2 0 0 0 1.8 3h12.4A2 2 0 0 0 20 19l-5-11V2"/><path d="M9 2h6"/><circle cx="12" cy="16" r="1.2" fill="currentColor" stroke="none"/><circle cx="9.3" cy="18.4" r="0.9" fill="currentColor" stroke="none"/></svg>
-      Built on <strong>experimental evidence</strong>.
+      <span>Built on <strong>experimental evidence</strong></span>
     </p>
   </div>
 </section>
@@ -197,18 +197,165 @@
 
   <section class="result-section hidden" id="resultCard">
     <div class="result-content" id="resultContent">
-      <div class="card">
-        <div class="card-header"><h2>Prediction</h2></div>
-        <div class="card-body">
-          <p class="section-label" id="regimeSectionLabel">Predicted regime</p>
-          <div class="regime-badge" id="regimeBadge">
-            <span class="regime-roman" id="regimeRoman">I</span>
-            <span class="regime-text" id="regimeText">Efficient luminal encapsulation</span>
-          </div>
-          <p class="regime-blurb" id="regimeBlurb"></p>
-          <h3 id="resultProtein">—</h3>
+      <div class="report-card">
 
-          <p class="section-label">Key descriptors</p>
+        <div class="report-header">
+          <div>
+            <p class="report-title">enCAGE Analysis Result</p>
+            <p class="report-id" id="reportId"></p>
+          </div>
+          <button class="btn-report-download" id="downloadBtnTop">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v13m0 0-4.5-4.5M12 16l4.5-4.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 19.5h16" stroke-linecap="round"/></svg>
+            Download CSV
+          </button>
+        </div>
+
+        <div class="report-summary">
+          <div class="report-summary-left">
+            <p class="section-label" id="regimeSectionLabel">Predicted regime</p>
+            <div class="regime-badge" id="regimeBadge">
+              <span class="regime-roman" id="regimeRoman">I</span>
+              <span class="regime-text" id="regimeText">Efficient luminal encapsulation</span>
+            </div>
+            <p class="report-margin-pill" id="reportMarginPill"></p>
+            <p class="regime-blurb" id="regimeBlurb"></p>
+            <h3 id="resultProtein">—</h3>
+            <ul class="report-checklist" id="reportChecklist"></ul>
+          </div>
+          <div class="report-summary-right">
+            <p class="report-box-label">Expected loading behaviour</p>
+            <ul class="report-box-list" id="reportLoadingList"></ul>
+          </div>
+        </div>
+
+        <div class="report-section">
+          <p class="section-label">Why this prediction?</p>
+          <div class="why-grid">
+            <div class="why-card">
+              <p class="why-card-title">Fit to cavity</p>
+              <div class="gauge-bar">
+                <div class="gauge-fill" id="gaugeCavityFill"></div>
+                <div class="gauge-marker" id="gaugeCavityMarker"></div>
+              </div>
+              <p class="why-stat"><span>Dmax</span><strong id="statDmax">—</strong></p>
+              <p class="why-stat"><span>Volume usage</span><strong id="statVolRatio">—</strong></p>
+              <p class="why-stat"><span>Shape (κ²)</span><strong id="statKappa">—</strong></p>
+              <div class="why-note" id="cavityNote"></div>
+            </div>
+            <div class="why-card">
+              <p class="why-card-title">Surface compatibility</p>
+              <div class="gauge-bar gauge-bar--charge">
+                <div class="gauge-marker" id="gaugeChargeMarker"></div>
+              </div>
+              <p class="why-stat"><span>Net charge (pH <span id="statPh">7.4</span>)</span><strong id="statCharge">—</strong></p>
+              <p class="why-stat"><span>Threshold</span><strong id="statThreshold">—</strong></p>
+              <div class="why-note" id="chargeNote"></div>
+            </div>
+            <div class="why-card why-card--overall">
+              <p class="why-card-title">Overall assessment</p>
+              <div class="regime-badge" id="overallRegimeBadge">
+                <span class="regime-roman" id="overallRegimeRoman">I</span>
+                <span class="regime-text" id="overallRegimeText"></span>
+              </div>
+              <ul class="why-overall-list" id="overallList"></ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="report-section">
+          <p class="section-label">Experimental recommendations</p>
+          <div class="recs-grid">
+            <div class="rec-card">
+              <p class="rec-title">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 2v6L4 19a2 2 0 0 0 1.8 3h12.4A2 2 0 0 0 20 19l-5-11V2"/><path d="M9 2h6"/></svg>
+                Expected outcome
+              </p>
+              <p id="recOutcome"></p>
+            </div>
+            <div class="rec-card">
+              <p class="rec-title">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Recommended assays
+              </p>
+              <ul id="recAssays"></ul>
+            </div>
+            <div class="rec-card rec-card--warn">
+              <p class="rec-title">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2 2 20h20Z" stroke-linejoin="round"/><path d="M12 9v4.5" stroke-linecap="round"/><circle cx="12" cy="16.5" r="1" fill="currentColor" stroke="none"/></svg>
+                Potential concerns
+              </p>
+              <p id="recConcerns"></p>
+            </div>
+            <div class="rec-card rec-card--info">
+              <p class="rec-title">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5" stroke-linecap="round"/><circle cx="12" cy="7.8" r="0.9" fill="currentColor" stroke="none"/></svg>
+                Notes
+              </p>
+              <p id="recNotes"></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="report-section">
+          <p class="section-label">How your protein compares to empirical thresholds</p>
+          <div class="thresholds-grid">
+            <div class="threshold-chart">
+              <p class="threshold-title">Cavity diameter (Dmax)</p>
+              <div class="threshold-bar">
+                <div class="threshold-zone zone-green" id="dmaxZoneGreen"></div>
+                <div class="threshold-zone zone-yellow" id="dmaxZoneYellow"></div>
+                <div class="threshold-zone zone-red" id="dmaxZoneRed"></div>
+                <div class="threshold-marker" id="dmaxMarker"><span id="dmaxMarkerValue"></span></div>
+              </div>
+              <div class="threshold-axis"><span>0</span><span id="dmaxAxisMax">8.0 nm</span></div>
+              <div class="threshold-legend">
+                <span><i class="legend-dot dot-green"></i>Excellent (&lt;6 nm)</span>
+                <span><i class="legend-dot dot-yellow"></i>Borderline (6–8 nm)</span>
+                <span><i class="legend-dot dot-red"></i>Too large (&gt;8 nm)</span>
+              </div>
+            </div>
+            <div class="threshold-chart">
+              <p class="threshold-title">Net charge (pH <span id="chargeAxisPh">7.4</span>)</p>
+              <div class="threshold-bar">
+                <div class="threshold-zone zone-green" id="chargeZoneGreen"></div>
+                <div class="threshold-zone zone-yellow" id="chargeZoneYellow"></div>
+                <div class="threshold-zone zone-red" id="chargeZoneRed"></div>
+                <div class="threshold-marker" id="chargeMarker"><span id="chargeMarkerValue"></span></div>
+              </div>
+              <div class="threshold-axis"><span id="chargeAxisMin">-10</span><span>0</span><span id="chargeAxisMax">+10</span></div>
+              <div class="threshold-legend">
+                <span><i class="legend-dot dot-green"></i>Favourable</span>
+                <span><i class="legend-dot dot-yellow"></i>Caution</span>
+                <span><i class="legend-dot dot-red"></i>Unfavourable</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="report-section">
+          <p class="section-label">Scientific summary</p>
+          <p class="scientific-text" id="scientificSummary"></p>
+          <div class="scientific-grid">
+            <div class="scientific-box">
+              <p class="scientific-box-title">Protein information</p>
+              <dl>
+                <div><dt>PDB / label</dt><dd id="infoProtein">—</dd></div>
+                <div><dt>Molecular weight</dt><dd id="infoMW">—</dd></div>
+              </dl>
+            </div>
+            <div class="scientific-box">
+              <p class="scientific-box-title">Cavity reference</p>
+              <dl>
+                <div><dt>Ferritin cavity diameter</dt><dd>~8.0 nm</dd></div>
+                <div><dt>Ferritin cavity volume</dt><dd>268 nm³</dd></div>
+                <div><dt>pH (analysis)</dt><dd id="infoPh">—</dd></div>
+              </dl>
+            </div>
+          </div>
+        </div>
+
+        <details class="advanced-descriptors">
+          <summary>Advanced descriptors</summary>
           <div class="descriptor-table-wrap">
             <table class="descriptor-table" id="descriptorTable">
               <thead>
@@ -217,14 +364,11 @@
               <tbody id="descriptorGrid"></tbody>
             </table>
           </div>
+        </details>
 
-          <p class="section-label">Rationale &amp; notes</p>
-          <div class="notes" id="notesBlock"></div>
-
-          <div class="result-actions">
-            <button class="btn-secondary" id="downloadBtn">Download CSV</button>
-            <button class="btn-secondary" id="resetBtn">Analyze another</button>
-          </div>
+        <div class="result-actions">
+          <button class="btn-secondary" id="downloadBtn">Download CSV</button>
+          <button class="btn-secondary" id="resetBtn">Analyze another protein</button>
         </div>
       </div>
     </div>

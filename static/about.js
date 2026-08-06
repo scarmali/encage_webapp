@@ -42,6 +42,22 @@
     showSection((location.hash || "").replace("#", ""), { scroll: false });
   });
 
+  // In-page anchors that point at a spot within the current section (e.g. the
+  // "jump to this descriptor" links) rather than at a section itself — scroll
+  // manually instead of letting the browser touch location.hash, since a hash
+  // change here can be picked up by the popstate handler above and mistaken
+  // for a section id, resetting the view back to Overview.
+  document.querySelectorAll('a[href^="#"]').forEach(function (link) {
+    var targetId = link.getAttribute("href").slice(1);
+    if (!targetId || VALID.indexOf(targetId) !== -1) return;
+    link.addEventListener("click", function (e) {
+      var target = document.getElementById(targetId);
+      if (!target) return;
+      e.preventDefault();
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  });
+
   showSection((location.hash || "").replace("#", ""), { scroll: false });
 
   // Report which encage_core the backend is actually running. The frontend is

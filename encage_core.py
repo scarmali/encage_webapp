@@ -35,7 +35,7 @@ from Bio.PDB import PDBParser
 # 1.0.0 is reserved for the release cited in the manuscript. Pre-publication
 # releases stay on 0.x, where the 0 major signals that thresholds and outputs
 # may still change.
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 parser = PDBParser(QUIET=True)
 
@@ -277,14 +277,21 @@ def analyze_pdb(pdb_path, stem, pH=None, cationic_threshold=None, overrides=None
     dmax_nm = dmax_A / 10.0
     kappa2 = relative_shape_anisotropy(eigvals)
 
-    unknown_residues = []
+    seq, unknown_residues = sequence_from_structure(structure)
     if overrides.get("net_charge") is not None:
         q = float(overrides["net_charge"])
         q_src = "provided"
     else:
-        seq, unknown_residues = sequence_from_structure(structure)
         q = net_charge(seq, cfg["pH"])
         q_src = "estimated (Henderson-Hasselbalch)"
+
+    mw_kda = None
+    if seq:
+        try:
+            from Bio.SeqUtils.ProtParam import ProteinAnalysis
+            mw_kda = round(ProteinAnalysis(seq).molecular_weight() / 1000.0, 1)
+        except Exception:
+            mw_kda = None
 
     if overrides.get("ses_volume_A3") is not None:
         vol_A3 = float(overrides["ses_volume_A3"])
@@ -314,8 +321,10 @@ def analyze_pdb(pdb_path, stem, pH=None, cationic_threshold=None, overrides=None
         volume_source=v_src,
         net_charge=round(q, 2) if q == q else None,
         charge_source=q_src,
+        molecular_weight_kda=mw_kda,
         ph=cfg["pH"],
         cationic_threshold=cfg["cationic_threshold"],
+        cationic_warn_low=cfg["cationic_warn_low"],
         kappa2=round(kappa2, 3),
         multidomain=multidomain,
         regime_number=regime_num,
